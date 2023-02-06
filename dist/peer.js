@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_js_1 = __importDefault(require("./socket.js"));
+const buffer_1 = require("buffer");
 class Peer {
     _proxy;
     _peer;
@@ -33,7 +34,10 @@ class Peer {
             protocol: this._proxy.protocol,
             async onopen(m) {
                 if (!m) {
-                    m = Buffer.from([]);
+                    m = buffer_1.Buffer.from([]);
+                }
+                if (m instanceof Uint8Array) {
+                    m = buffer_1.Buffer.from(m);
                 }
                 self._socket = new socket_js_1.default({
                     remoteAddress: self._peer.rawStream.remoteHost,
@@ -55,6 +59,9 @@ class Peer {
         });
         const pipe = channel.addMessage({
             async onmessage(m) {
+                if (m instanceof Uint8Array) {
+                    m = buffer_1.Buffer.from(m);
+                }
                 self._socket.emit("data", m);
                 await self._onreceive?.(m);
             },
