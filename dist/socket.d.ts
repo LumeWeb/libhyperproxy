@@ -12,6 +12,8 @@ export default class Socket extends Duplex {
     remotePort: any;
     remoteFamily: AddressFamily;
     bufferSize: any;
+    readable: true;
+    writable: true;
     constructor({ allowHalfOpen, remoteAddress, remotePort, write, }?: SocketOptions);
     private _connecting;
     get connecting(): boolean;
