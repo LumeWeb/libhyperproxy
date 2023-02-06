@@ -1,5 +1,6 @@
 import Proxy from "./proxy.js";
 import Socket from "./socket.js";
+import { Buffer } from "buffer";
 export type OnOpen = (
   socket: Socket,
   data: any
@@ -70,6 +71,10 @@ export default class Peer {
         if (!m) {
           m = Buffer.from([]);
         }
+
+        if (m instanceof Uint8Array) {
+          m = Buffer.from(m);
+        }
         self._socket = new Socket({
           remoteAddress: self._peer.rawStream.remoteHost,
           remotePort: self._peer.rawStream.remotePort,
@@ -81,6 +86,7 @@ export default class Peer {
           // @ts-ignore
           self._socket.emit("connect");
         }
+
         self._socket.emit("data", m);
       },
       async onclose() {
@@ -90,6 +96,9 @@ export default class Peer {
     });
     const pipe = channel.addMessage({
       async onmessage(m: any) {
+        if (m instanceof Uint8Array) {
+          m = Buffer.from(m);
+        }
         self._socket.emit("data", m);
         await self._onreceive?.(m);
       },
