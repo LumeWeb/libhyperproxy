@@ -24,6 +24,9 @@ export default class Socket extends Duplex {
 
   public bufferSize;
 
+  declare readable: true;
+  declare writable: true;
+
   constructor({
     allowHalfOpen = false,
     remoteAddress,
