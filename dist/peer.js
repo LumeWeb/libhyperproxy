@@ -53,7 +53,7 @@ class Peer {
                 self._socket.emit("data", m);
             },
             async onclose() {
-                self._socket?.end();
+                self._socket?.destroy();
                 await self._onclose?.(self._socket);
             },
         });
