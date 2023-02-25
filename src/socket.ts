@@ -9,6 +9,7 @@ interface SocketOptions {
   allowHalfOpen?: boolean;
   remoteAddress?: string;
   remotePort?: number;
+  remotePublicKey?: Uint8Array;
   write?: (
     this: Duplex<any, any, any, any, true, true, DuplexEvents<any, any>>,
     data: any,
@@ -26,17 +27,20 @@ export default class Socket extends Duplex {
 
   declare readable: true;
   declare writable: true;
+  public remotePublicKey: Uint8Array;
 
   constructor({
     allowHalfOpen = false,
     remoteAddress,
     remotePort,
+    remotePublicKey,
     write,
   }: SocketOptions = {}) {
     super({ write });
     this._allowHalfOpen = allowHalfOpen;
     this.remoteAddress = remoteAddress;
     this.remotePort = remotePort;
+    this.remotePublicKey = remotePublicKey;
 
     if (remoteAddress) {
       const type = Socket.isIP(remoteAddress);
