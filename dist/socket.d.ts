@@ -4,6 +4,7 @@ interface SocketOptions {
     allowHalfOpen?: boolean;
     remoteAddress?: string;
     remotePort?: number;
+    remotePublicKey?: Uint8Array;
     write?: (this: Duplex<any, any, any, any, true, true, DuplexEvents<any, any>>, data: any, cb: Callback) => void;
 }
 export default class Socket extends Duplex {
@@ -14,7 +15,8 @@ export default class Socket extends Duplex {
     bufferSize: any;
     readable: true;
     writable: true;
-    constructor({ allowHalfOpen, remoteAddress, remotePort, write, }?: SocketOptions);
+    remotePublicKey: Uint8Array;
+    constructor({ allowHalfOpen, remoteAddress, remotePort, remotePublicKey, write, }?: SocketOptions);
     private _connecting;
     get connecting(): boolean;
     get readyState(): string;

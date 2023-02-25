@@ -9,11 +9,13 @@ class Socket extends streamx_1.Duplex {
     remotePort;
     remoteFamily;
     bufferSize;
-    constructor({ allowHalfOpen = false, remoteAddress, remotePort, write, } = {}) {
+    remotePublicKey;
+    constructor({ allowHalfOpen = false, remoteAddress, remotePort, remotePublicKey, write, } = {}) {
         super({ write });
         this._allowHalfOpen = allowHalfOpen;
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
+        this.remotePublicKey = remotePublicKey;
         if (remoteAddress) {
             const type = Socket.isIP(remoteAddress);
             if (!type) {
