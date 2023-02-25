@@ -98,7 +98,9 @@ export default class Socket extends Duplex {
   }
 
   addEventListener = this.addListener;
+  on = this.addListener;
   removeEventListener = this.removeListener;
+  off = this.removeListener;
 
   static isIP(input: string): number {
     if (Socket.isIPv4(input)) {
