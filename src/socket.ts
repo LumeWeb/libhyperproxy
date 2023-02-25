@@ -48,7 +48,7 @@ export default class Socket extends Duplex {
         throw Error("invalid remoteAddress");
       }
 
-      this.remoteFamily = type === 6 ? IPV4 : IPV6;
+      this.remoteFamily = type === 6 ? IPV6 : IPV4;
     }
   }
 
