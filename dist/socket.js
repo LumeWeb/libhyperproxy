@@ -21,7 +21,7 @@ class Socket extends streamx_1.Duplex {
             if (!type) {
                 throw Error("invalid remoteAddress");
             }
-            this.remoteFamily = type === 6 ? IPV4 : IPV6;
+            this.remoteFamily = type === 6 ? IPV6 : IPV4;
         }
     }
     _connecting;
