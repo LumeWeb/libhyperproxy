@@ -64,6 +64,8 @@ class Socket extends streamx_1.Duplex {
             family: this.remoteFamily,
         };
     }
+    addEventListener = this.addListener;
+    removeEventListener = this.removeListener;
     static isIP(input) {
         if (Socket.isIPv4(input)) {
             return 4;

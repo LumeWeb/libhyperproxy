@@ -30,6 +30,8 @@ export default class Socket extends Duplex {
         port: any;
         family: AddressFamily;
     };
+    addEventListener: <TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping">(event: TEvent, listener: TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping" ? DuplexEvents<any, any>[TEvent] : (...args: any[]) => void) => this;
+    removeEventListener: <TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping">(event: TEvent, listener: TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping" ? DuplexEvents<any, any>[TEvent] : (...args: any[]) => void) => this;
     static isIP(input: string): number;
     static isIPv4(input: string): boolean;
     static isIPv6(input: string): boolean;
