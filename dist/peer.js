@@ -42,6 +42,7 @@ class Peer {
                 self._socket = new socket_js_1.default({
                     remoteAddress: self._peer.rawStream.remoteHost,
                     remotePort: self._peer.rawStream.remotePort,
+                    remotePublicKey: self._peer.remotePublicKey,
                     write,
                 });
                 self._socket.on("end", () => channel.close());
