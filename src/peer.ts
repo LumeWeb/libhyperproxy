@@ -78,6 +78,7 @@ export default class Peer {
         self._socket = new Socket({
           remoteAddress: self._peer.rawStream.remoteHost,
           remotePort: self._peer.rawStream.remotePort,
+          remotePublicKey: self._peer.remotePublicKey,
           write,
         });
         self._socket.on("end", () => channel.close());
