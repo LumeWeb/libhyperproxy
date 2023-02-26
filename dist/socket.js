@@ -27,8 +27,9 @@ class Socket extends streamx_1.Duplex {
             this.remoteFamily = type === 6 ? IPV6 : IPV4;
         }
         if (this._emulateWebsocket) {
+            this.addEventListener("data", (data) => 
             // @ts-ignore
-            this.addEventListener("data", (data) => this.emit("message", data));
+            this.emit("message", new MessageEvent("data", { data })));
         }
     }
     _connecting;
