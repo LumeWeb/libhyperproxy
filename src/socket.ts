@@ -32,10 +32,10 @@ export default class Socket extends Duplex {
   public remotePublicKey: Uint8Array;
   private _emulateWebsocket: boolean;
 
-  declare addEventListener: typeof this.addListener;
-  declare removeEventListener: typeof this.removeListener;
-  declare send: typeof this.write;
-  declare close: typeof this.end;
+  declare addEventListener?: typeof this.addListener;
+  declare removeEventListener?: typeof this.removeListener;
+  declare send?: typeof this.write;
+  declare close?: typeof this.end;
 
   constructor({
     allowHalfOpen = false,
