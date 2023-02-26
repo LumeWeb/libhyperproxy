@@ -19,6 +19,7 @@ export interface DataSocketOptions {
   onreceive?: OnReceive;
   onsend?: OnSend;
   onclose?: OnClose;
+  emulateWebsocket?: boolean;
 }
 
 export interface PeerOptions {
@@ -39,6 +40,7 @@ export default class Peer {
   private _onreceive: OnReceive;
   private _onsend: OnSend;
   private _onclose: OnClose;
+  private _emulateWebsocket: boolean;
 
   constructor({
     proxy,
@@ -48,6 +50,7 @@ export default class Peer {
     onreceive,
     onsend,
     onclose,
+    emulateWebsocket = false,
   }: PeerOptionsWithProxy & DataSocketOptions) {
     this._proxy = proxy;
     this._peer = peer;
@@ -56,6 +59,7 @@ export default class Peer {
     this._onreceive = onreceive;
     this._onsend = onsend;
     this._onclose = onclose;
+    this._emulateWebsocket = emulateWebsocket;
   }
 
   async init() {
@@ -80,6 +84,7 @@ export default class Peer {
           remotePort: self._peer.rawStream.remotePort,
           remotePublicKey: self._peer.remotePublicKey,
           write,
+          emulateWebsocket: self._emulateWebsocket,
         });
         self._socket.on("end", () => channel.close());
         let ret = await self._onopen?.(self._socket, m);
