@@ -35,6 +35,7 @@ export default class Socket extends Duplex {
   declare addEventListener: typeof this.addListener;
   declare removeEventListener: typeof this.removeListener;
   declare send: typeof this.write;
+  declare close: typeof this.end;
 
   constructor({
     allowHalfOpen = false,
@@ -64,6 +65,7 @@ export default class Socket extends Duplex {
       this.addEventListener = this.addListener;
       this.removeEventListener = this.removeListener;
       this.send = this.write;
+      this.close = this.end;
       this.addEventListener("data", (data: any) =>
         // @ts-ignore
         this.emit("message", new MessageEvent("data", { data }))
