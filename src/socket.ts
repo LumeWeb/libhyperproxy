@@ -1,4 +1,5 @@
 import { Duplex, DuplexEvents, Callback } from "streamx";
+import { write } from "fs";
 
 const IPV4 = "IPv4";
 const IPV6 = "IPv6";
@@ -101,6 +102,8 @@ export default class Socket extends Duplex {
   on = this.addListener;
   removeEventListener = this.removeListener;
   off = this.removeListener;
+
+  send = write;
 
   static isIP(input: string): number {
     if (Socket.isIPv4(input)) {
