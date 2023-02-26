@@ -32,6 +32,10 @@ export default class Socket extends Duplex {
   public remotePublicKey: Uint8Array;
   private _emulateWebsocket: boolean;
 
+  declare addEventListener: typeof this.addListener;
+  declare removeEventListener: typeof this.removeListener;
+  declare send: typeof this.write;
+
   constructor({
     allowHalfOpen = false,
     remoteAddress,
@@ -57,6 +61,9 @@ export default class Socket extends Duplex {
     }
 
     if (this._emulateWebsocket) {
+      this.addEventListener = this.addListener;
+      this.removeEventListener = this.removeListener;
+      this.send = this.write;
       this.addEventListener("data", (data: any) =>
         // @ts-ignore
         this.emit("message", new MessageEvent("data", { data }))
@@ -118,13 +125,6 @@ export default class Socket extends Duplex {
       family: this.remoteFamily,
     };
   }
-
-  addEventListener = this.addListener;
-  on = this.addListener;
-  removeEventListener = this.removeListener;
-  off = this.removeListener;
-
-  send = write;
 
   static isIP(input: string): number {
     if (Socket.isIPv4(input)) {
