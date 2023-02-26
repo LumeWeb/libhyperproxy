@@ -37,6 +37,17 @@ class Socket extends streamx_1.Duplex {
         return this._connecting;
     }
     get readyState() {
+        if (this._emulateWebsocket) {
+            if (this._connecting) {
+                return 0;
+            }
+            else if (this.readable && this.writable) {
+                return 1;
+            }
+            else {
+                return 3;
+            }
+        }
         if (this._connecting) {
             return "opening";
         }

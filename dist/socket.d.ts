@@ -23,7 +23,7 @@ export default class Socket extends Duplex {
     constructor({ allowHalfOpen, remoteAddress, remotePort, remotePublicKey, write, emulateWebsocket, }?: SocketOptions);
     private _connecting;
     get connecting(): boolean;
-    get readyState(): string;
+    get readyState(): string | number;
     listen(): void;
     setTimeout(msecs: any, callback: any): void;
     _onTimeout(): void;
