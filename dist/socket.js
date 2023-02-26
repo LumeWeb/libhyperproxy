@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const streamx_1 = require("streamx");
-const fs_1 = require("fs");
 const IPV4 = "IPv4";
 const IPV6 = "IPv6";
 class Socket extends streamx_1.Duplex {
@@ -27,6 +26,9 @@ class Socket extends streamx_1.Duplex {
             this.remoteFamily = type === 6 ? IPV6 : IPV4;
         }
         if (this._emulateWebsocket) {
+            this.addEventListener = this.addListener;
+            this.removeEventListener = this.removeListener;
+            this.send = this.write;
             this.addEventListener("data", (data) => 
             // @ts-ignore
             this.emit("message", new MessageEvent("data", { data })));
@@ -83,11 +85,6 @@ class Socket extends streamx_1.Duplex {
             family: this.remoteFamily,
         };
     }
-    addEventListener = this.addListener;
-    on = this.addListener;
-    removeEventListener = this.removeListener;
-    off = this.removeListener;
-    send = fs_1.write;
     static isIP(input) {
         if (Socket.isIPv4(input)) {
             return 4;
