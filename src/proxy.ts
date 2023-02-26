@@ -22,12 +22,19 @@ export default class Proxy {
     onclose,
     listen = false,
     autostart = false,
+    emulateWebsocket = false,
   }: ProxyOptions) {
     this._swarm = swarm;
     this._protocol = protocol;
     this._listen = listen;
     this._autostart = autostart;
-    this._socketOptions = { onopen, onreceive, onsend, onclose };
+    this._socketOptions = {
+      onopen,
+      onreceive,
+      onsend,
+      onclose,
+      emulateWebsocket,
+    };
     this.init();
   }
 
