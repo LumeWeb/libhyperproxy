@@ -18,9 +18,10 @@ export default class Socket extends Duplex {
     writable: true;
     remotePublicKey: Uint8Array;
     private _emulateWebsocket;
-    addEventListener: typeof this.addListener;
-    removeEventListener: typeof this.removeListener;
-    send: typeof this.write;
+    addEventListener?: typeof this.addListener;
+    removeEventListener?: typeof this.removeListener;
+    send?: typeof this.write;
+    close?: typeof this.end;
     constructor({ allowHalfOpen, remoteAddress, remotePort, remotePublicKey, write, emulateWebsocket, }?: SocketOptions);
     private _connecting;
     get connecting(): boolean;

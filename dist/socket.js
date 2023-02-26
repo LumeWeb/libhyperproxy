@@ -29,6 +29,7 @@ class Socket extends streamx_1.Duplex {
             this.addEventListener = this.addListener;
             this.removeEventListener = this.removeListener;
             this.send = this.write;
+            this.close = this.end;
             this.addEventListener("data", (data) => 
             // @ts-ignore
             this.emit("message", new MessageEvent("data", { data })));
