@@ -57,8 +57,10 @@ export default class Socket extends Duplex {
     }
 
     if (this._emulateWebsocket) {
-      // @ts-ignore
-      this.addEventListener("data", (data: any) => this.emit("message", data));
+      this.addEventListener("data", (data: any) =>
+        // @ts-ignore
+        this.emit("message", new MessageEvent("data", { data }))
+      );
     }
   }
 
