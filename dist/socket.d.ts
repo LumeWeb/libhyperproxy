@@ -1,4 +1,6 @@
+/// <reference types="node" />
 import { Duplex, DuplexEvents, Callback } from "streamx";
+import { write } from "fs";
 type AddressFamily = "IPv6" | "IPv4";
 interface SocketOptions {
     allowHalfOpen?: boolean;
@@ -6,6 +8,7 @@ interface SocketOptions {
     remotePort?: number;
     remotePublicKey?: Uint8Array;
     write?: (this: Duplex<any, any, any, any, true, true, DuplexEvents<any, any>>, data: any, cb: Callback) => void;
+    emulateWebsocket?: boolean;
 }
 export default class Socket extends Duplex {
     private _allowHalfOpen;
@@ -16,7 +19,8 @@ export default class Socket extends Duplex {
     readable: true;
     writable: true;
     remotePublicKey: Uint8Array;
-    constructor({ allowHalfOpen, remoteAddress, remotePort, remotePublicKey, write, }?: SocketOptions);
+    private _emulateWebsocket;
+    constructor({ allowHalfOpen, remoteAddress, remotePort, remotePublicKey, write, emulateWebsocket, }?: SocketOptions);
     private _connecting;
     get connecting(): boolean;
     get readyState(): string;
@@ -34,6 +38,7 @@ export default class Socket extends Duplex {
     on: <TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping">(event: TEvent, listener: TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping" ? DuplexEvents<any, any>[TEvent] : (...args: any[]) => void) => this;
     removeEventListener: <TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping">(event: TEvent, listener: TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping" ? DuplexEvents<any, any>[TEvent] : (...args: any[]) => void) => this;
     off: <TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping">(event: TEvent, listener: TEvent extends "data" | "end" | "finish" | "pipe" | "readable" | "drain" | keyof import("streamx").StreamEvents | "piping" ? DuplexEvents<any, any>[TEvent] : (...args: any[]) => void) => this;
+    send: typeof write;
     static isIP(input: string): number;
     static isIPv4(input: string): boolean;
     static isIPv6(input: string): boolean;

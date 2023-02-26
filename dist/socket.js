@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const streamx_1 = require("streamx");
+const fs_1 = require("fs");
 const IPV4 = "IPv4";
 const IPV6 = "IPv6";
 class Socket extends streamx_1.Duplex {
@@ -10,18 +11,24 @@ class Socket extends streamx_1.Duplex {
     remoteFamily;
     bufferSize;
     remotePublicKey;
-    constructor({ allowHalfOpen = false, remoteAddress, remotePort, remotePublicKey, write, } = {}) {
+    _emulateWebsocket;
+    constructor({ allowHalfOpen = false, remoteAddress, remotePort, remotePublicKey, write, emulateWebsocket = false, } = {}) {
         super({ write });
         this._allowHalfOpen = allowHalfOpen;
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
         this.remotePublicKey = remotePublicKey;
+        this._emulateWebsocket = emulateWebsocket;
         if (remoteAddress) {
             const type = Socket.isIP(remoteAddress);
             if (!type) {
                 throw Error("invalid remoteAddress");
             }
             this.remoteFamily = type === 6 ? IPV6 : IPV4;
+        }
+        if (this._emulateWebsocket) {
+            // @ts-ignore
+            this.addEventListener("data", (data) => this.emit("message", data));
         }
     }
     _connecting;
@@ -68,6 +75,7 @@ class Socket extends streamx_1.Duplex {
     on = this.addListener;
     removeEventListener = this.removeListener;
     off = this.removeListener;
+    send = fs_1.write;
     static isIP(input) {
         if (Socket.isIPv4(input)) {
             return 4;
