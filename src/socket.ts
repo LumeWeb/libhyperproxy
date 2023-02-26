@@ -16,6 +16,7 @@ interface SocketOptions {
     data: any,
     cb: Callback
   ) => void;
+  emulateWebsocket?: boolean;
 }
 
 export default class Socket extends Duplex {
@@ -29,6 +30,7 @@ export default class Socket extends Duplex {
   declare readable: true;
   declare writable: true;
   public remotePublicKey: Uint8Array;
+  private _emulateWebsocket: boolean;
 
   constructor({
     allowHalfOpen = false,
@@ -36,12 +38,14 @@ export default class Socket extends Duplex {
     remotePort,
     remotePublicKey,
     write,
+    emulateWebsocket = false,
   }: SocketOptions = {}) {
     super({ write });
     this._allowHalfOpen = allowHalfOpen;
     this.remoteAddress = remoteAddress;
     this.remotePort = remotePort;
     this.remotePublicKey = remotePublicKey;
+    this._emulateWebsocket = emulateWebsocket;
 
     if (remoteAddress) {
       const type = Socket.isIP(remoteAddress);
@@ -50,6 +54,11 @@ export default class Socket extends Duplex {
       }
 
       this.remoteFamily = type === 6 ? IPV6 : IPV4;
+    }
+
+    if (this._emulateWebsocket) {
+      // @ts-ignore
+      this.addEventListener("data", (data: any) => this.emit("message", data));
     }
   }
 
