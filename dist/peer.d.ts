@@ -14,6 +14,7 @@ export interface DataSocketOptions {
     onreceive?: OnReceive;
     onsend?: OnSend;
     onclose?: OnClose;
+    emulateWebsocket?: boolean;
 }
 export interface PeerOptions {
     peer: any;
@@ -31,6 +32,7 @@ export default class Peer {
     private _onreceive;
     private _onsend;
     private _onclose;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, }: PeerOptionsWithProxy & DataSocketOptions);
+    private _emulateWebsocket;
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
     init(): Promise<void>;
 }

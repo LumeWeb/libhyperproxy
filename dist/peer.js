@@ -14,7 +14,8 @@ class Peer {
     _onreceive;
     _onsend;
     _onclose;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, }) {
+    _emulateWebsocket;
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket = false, }) {
         this._proxy = proxy;
         this._peer = peer;
         this._muxer = muxer;
@@ -22,6 +23,7 @@ class Peer {
         this._onreceive = onreceive;
         this._onsend = onsend;
         this._onclose = onclose;
+        this._emulateWebsocket = emulateWebsocket;
     }
     async init() {
         const write = async (data, cb) => {
@@ -44,6 +46,7 @@ class Peer {
                     remotePort: self._peer.rawStream.remotePort,
                     remotePublicKey: self._peer.remotePublicKey,
                     write,
+                    emulateWebsocket: self._emulateWebsocket,
                 });
                 self._socket.on("end", () => channel.close());
                 let ret = await self._onopen?.(self._socket, m);
