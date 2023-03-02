@@ -15,7 +15,6 @@ class Peer {
     _onsend;
     _onclose;
     _emulateWebsocket;
-    _channel;
     constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket = false, }) {
         this._proxy = proxy;
         this._peer = peer;
@@ -25,6 +24,10 @@ class Peer {
         this._onsend = onsend?.bind(undefined, this);
         this._onclose = onclose?.bind(undefined, this);
         this._emulateWebsocket = emulateWebsocket;
+    }
+    _channel;
+    get channel() {
+        return this._channel;
     }
     async init() {
         const write = async (data, cb) => {
