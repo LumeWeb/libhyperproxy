@@ -57,10 +57,10 @@ export default class Peer {
     this._proxy = proxy;
     this._peer = peer;
     this._muxer = muxer;
-    this._onopen = onopen?.bind(this);
-    this._onreceive = onreceive?.bind(this);
-    this._onsend = onsend?.bind(this);
-    this._onclose = onclose?.bind(this);
+    this._onopen = onopen?.bind(undefined, this);
+    this._onreceive = onreceive?.bind(undefined, this);
+    this._onsend = onsend?.bind(undefined, this);
+    this._onclose = onclose?.bind(undefined, this);
     this._emulateWebsocket = emulateWebsocket;
   }
 
