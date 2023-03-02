@@ -56,8 +56,6 @@ export default class Peer {
   private _onclose: OnCloseBound;
   private _emulateWebsocket: boolean;
 
-  private _channel?: any;
-
   constructor({
     proxy,
     peer,
@@ -76,6 +74,12 @@ export default class Peer {
     this._onsend = onsend?.bind(undefined, this);
     this._onclose = onclose?.bind(undefined, this);
     this._emulateWebsocket = emulateWebsocket;
+  }
+
+  private _channel?: any;
+
+  get channel(): any {
+    return this._channel;
   }
 
   async init() {
