@@ -15,14 +15,15 @@ class Peer {
     _onsend;
     _onclose;
     _emulateWebsocket;
+    _channel;
     constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket = false, }) {
         this._proxy = proxy;
         this._peer = peer;
         this._muxer = muxer;
-        this._onopen = onopen;
-        this._onreceive = onreceive;
-        this._onsend = onsend;
-        this._onclose = onclose;
+        this._onopen = onopen?.bind(this);
+        this._onreceive = onreceive?.bind(this);
+        this._onsend = onsend?.bind(this);
+        this._onclose = onclose?.bind(this);
         this._emulateWebsocket = emulateWebsocket;
     }
     async init() {
@@ -32,7 +33,7 @@ class Peer {
             cb();
         };
         const self = this;
-        const channel = this._muxer.createChannel({
+        this._channel = this._muxer.createChannel({
             protocol: this._proxy.protocol,
             async onopen(m) {
                 if (!m) {
@@ -48,7 +49,7 @@ class Peer {
                     write,
                     emulateWebsocket: self._emulateWebsocket,
                 });
-                self._socket.on("end", () => channel.close());
+                self._socket.on("end", () => this._channel.close());
                 let ret = await self._onopen?.(self._socket, m);
                 if (!ret || (ret && ret.connect === false)) {
                     // @ts-ignore
@@ -61,7 +62,7 @@ class Peer {
                 await self._onclose?.(self._socket);
             },
         });
-        const pipe = channel.addMessage({
+        const pipe = this._channel.addMessage({
             async onmessage(m) {
                 if (m instanceof Uint8Array) {
                     m = buffer_1.Buffer.from(m);
@@ -70,7 +71,7 @@ class Peer {
                 await self._onreceive?.(m);
             },
         });
-        await channel.open();
+        await this._channel.open();
     }
 }
 exports.default = Peer;
