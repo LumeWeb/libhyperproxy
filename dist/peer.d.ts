@@ -1,14 +1,23 @@
 import Proxy from "./proxy.js";
 import Socket from "./socket.js";
-export type OnOpen = (socket: Socket, data: any) => {
+export type OnOpen = (peer: Peer, socket: Socket, data: any) => {
     connect: boolean;
 } | Promise<{
     connect: boolean;
 }> | Promise<void> | void;
-export type OnData = (data: any) => void;
+export type OnData = (peer: Peer, data: any) => void;
 export type OnReceive = OnData;
 export type OnClose = OnData;
 export type OnSend = OnData;
+export type OnOpenBound = (socket: Socket, data: any) => {
+    connect: boolean;
+} | Promise<{
+    connect: boolean;
+}> | Promise<void> | void;
+export type OnDataBound = (data: any) => void;
+export type OnReceiveBound = OnDataBound;
+export type OnCloseBound = OnDataBound;
+export type OnSendBound = OnDataBound;
 export interface DataSocketOptions {
     onopen?: OnOpen;
     onreceive?: OnReceive;
