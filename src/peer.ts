@@ -2,6 +2,7 @@ import Proxy from "./proxy.js";
 import Socket from "./socket.js";
 import { Buffer } from "buffer";
 export type OnOpen = (
+  peer: Peer,
   socket: Socket,
   data: any
 ) =>
