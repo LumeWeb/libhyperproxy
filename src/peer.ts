@@ -14,6 +14,7 @@ export type OnData = (peer: Peer, data: any) => void;
 export type OnReceive = OnData;
 export type OnClose = OnData;
 export type OnSend = OnData;
+export type OnChannel = (peer: Peer, channel: any) => void;
 
 export type OnOpenBound = (
   socket: Socket,
@@ -28,11 +29,14 @@ export type OnReceiveBound = OnDataBound;
 export type OnCloseBound = OnDataBound;
 export type OnSendBound = OnDataBound;
 
+export type OnChannelBound = (channel: any) => void;
+
 export interface DataSocketOptions {
   onopen?: OnOpen;
   onreceive?: OnReceive;
   onsend?: OnSend;
   onclose?: OnClose;
+  onchannel?: OnChannel;
   emulateWebsocket?: boolean;
 }
 
@@ -54,6 +58,7 @@ export default class Peer {
   private _onreceive: OnReceiveBound;
   private _onsend: OnSendBound;
   private _onclose: OnCloseBound;
+  private _onchannel: OnChannelBound;
   private _emulateWebsocket: boolean;
 
   constructor({
@@ -64,6 +69,7 @@ export default class Peer {
     onreceive,
     onsend,
     onclose,
+    onchannel,
     emulateWebsocket = false,
   }: PeerOptionsWithProxy & DataSocketOptions) {
     this._proxy = proxy;
@@ -73,6 +79,7 @@ export default class Peer {
     this._onreceive = onreceive?.bind(undefined, this);
     this._onsend = onsend?.bind(undefined, this);
     this._onclose = onclose?.bind(undefined, this);
+    this._onchannel = onchannel?.bind(undefined, this);
     this._emulateWebsocket = emulateWebsocket;
   }
 
@@ -130,6 +137,7 @@ export default class Peer {
       },
     });
 
+    await this._onchannel?.(this._channel);
     await this._channel.open();
   }
 }

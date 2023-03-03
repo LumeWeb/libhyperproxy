@@ -20,6 +20,7 @@ export default class Proxy {
     onreceive,
     onsend,
     onclose,
+    onchannel,
     listen = false,
     autostart = false,
     emulateWebsocket = false,
@@ -33,6 +34,7 @@ export default class Proxy {
       onreceive,
       onsend,
       onclose,
+      onchannel,
       emulateWebsocket,
     };
     this.init();
