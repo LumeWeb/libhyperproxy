@@ -9,7 +9,7 @@ export default class Proxy {
     private _listen;
     private _socketOptions;
     private _autostart;
-    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, listen, autostart, emulateWebsocket, }: ProxyOptions);
+    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen, autostart, emulateWebsocket, }: ProxyOptions);
     private _swarm;
     get swarm(): any;
     private _protocol;

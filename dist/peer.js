@@ -14,8 +14,9 @@ class Peer {
     _onreceive;
     _onsend;
     _onclose;
+    _onchannel;
     _emulateWebsocket;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket = false, }) {
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket = false, }) {
         this._proxy = proxy;
         this._peer = peer;
         this._muxer = muxer;
@@ -23,6 +24,7 @@ class Peer {
         this._onreceive = onreceive?.bind(undefined, this);
         this._onsend = onsend?.bind(undefined, this);
         this._onclose = onclose?.bind(undefined, this);
+        this._onchannel = onchannel?.bind(undefined, this);
         this._emulateWebsocket = emulateWebsocket;
     }
     _channel;
@@ -74,6 +76,7 @@ class Peer {
                 await self._onreceive?.(m);
             },
         });
+        await this._onchannel?.(this._channel);
         await this._channel.open();
     }
 }

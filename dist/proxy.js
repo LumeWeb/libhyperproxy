@@ -9,7 +9,7 @@ class Proxy {
     _listen;
     _socketOptions;
     _autostart;
-    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, listen = false, autostart = false, emulateWebsocket = false, }) {
+    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen = false, autostart = false, emulateWebsocket = false, }) {
         this._swarm = swarm;
         this._protocol = protocol;
         this._listen = listen;
@@ -19,6 +19,7 @@ class Proxy {
             onreceive,
             onsend,
             onclose,
+            onchannel,
             emulateWebsocket,
         };
         this.init();

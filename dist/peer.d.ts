@@ -9,6 +9,7 @@ export type OnData = (peer: Peer, data: any) => void;
 export type OnReceive = OnData;
 export type OnClose = OnData;
 export type OnSend = OnData;
+export type OnChannel = (peer: Peer, channel: any) => void;
 export type OnOpenBound = (socket: Socket, data: any) => {
     connect: boolean;
 } | Promise<{
@@ -18,11 +19,13 @@ export type OnDataBound = (data: any) => void;
 export type OnReceiveBound = OnDataBound;
 export type OnCloseBound = OnDataBound;
 export type OnSendBound = OnDataBound;
+export type OnChannelBound = (channel: any) => void;
 export interface DataSocketOptions {
     onopen?: OnOpen;
     onreceive?: OnReceive;
     onsend?: OnSend;
     onclose?: OnClose;
+    onchannel?: OnChannel;
     emulateWebsocket?: boolean;
 }
 export interface PeerOptions {
@@ -41,8 +44,9 @@ export default class Peer {
     private _onreceive;
     private _onsend;
     private _onclose;
+    private _onchannel;
     private _emulateWebsocket;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
     private _channel?;
     get channel(): any;
     init(): Promise<void>;
