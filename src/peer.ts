@@ -53,7 +53,6 @@ export default class Peer {
   private _proxy: Proxy;
   private _peer: any;
   private _muxer: any;
-  private _socket?: Socket;
   private _onopen: OnOpenBound;
   private _onreceive: OnReceiveBound;
   private _onsend: OnSendBound;
@@ -81,6 +80,12 @@ export default class Peer {
     this._onclose = onclose?.bind(undefined, this);
     this._onchannel = onchannel?.bind(undefined, this);
     this._emulateWebsocket = emulateWebsocket;
+  }
+
+  private _socket?: Socket;
+
+  get socket(): Socket {
+    return this._socket;
   }
 
   private _channel?: any;
