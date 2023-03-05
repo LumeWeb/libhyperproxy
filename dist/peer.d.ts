@@ -39,7 +39,6 @@ export default class Peer {
     private _proxy;
     private _peer;
     private _muxer;
-    private _socket?;
     private _onopen;
     private _onreceive;
     private _onsend;
@@ -47,6 +46,8 @@ export default class Peer {
     private _onchannel;
     private _emulateWebsocket;
     constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
+    private _socket?;
+    get socket(): Socket;
     private _channel?;
     get channel(): any;
     init(): Promise<void>;

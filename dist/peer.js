@@ -9,7 +9,6 @@ class Peer {
     _proxy;
     _peer;
     _muxer;
-    _socket;
     _onopen;
     _onreceive;
     _onsend;
@@ -26,6 +25,10 @@ class Peer {
         this._onclose = onclose?.bind(undefined, this);
         this._onchannel = onchannel?.bind(undefined, this);
         this._emulateWebsocket = emulateWebsocket;
+    }
+    _socket;
+    get socket() {
+        return this._socket;
     }
     _channel;
     get channel() {
