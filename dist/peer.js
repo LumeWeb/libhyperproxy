@@ -35,12 +35,18 @@ class Peer {
         return this._channel;
     }
     async init() {
-        const write = async (data, cb) => {
-            pipe.send(data);
-            await this._onsend?.(data);
-            cb();
-        };
         const self = this;
+        this._socket = new socket_js_1.default({
+            remoteAddress: self._peer.rawStream.remoteHost,
+            remotePort: self._peer.rawStream.remotePort,
+            remotePublicKey: self._peer.remotePublicKey,
+            async write(data, cb) {
+                pipe.send(data);
+                await self._onsend?.(data);
+                cb();
+            },
+            emulateWebsocket: self._emulateWebsocket,
+        });
         this._channel = this._muxer.createChannel({
             protocol: this._proxy.protocol,
             async onopen(m) {
@@ -50,13 +56,6 @@ class Peer {
                 if (m instanceof Uint8Array) {
                     m = buffer_1.Buffer.from(m);
                 }
-                self._socket = new socket_js_1.default({
-                    remoteAddress: self._peer.rawStream.remoteHost,
-                    remotePort: self._peer.rawStream.remotePort,
-                    remotePublicKey: self._peer.remotePublicKey,
-                    write,
-                    emulateWebsocket: self._emulateWebsocket,
-                });
                 self._socket.on("end", () => this._channel.close());
                 let ret = await self._onopen?.(self._socket, m);
                 if (!ret || (ret && ret.connect === false)) {
