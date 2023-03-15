@@ -27,6 +27,7 @@ export interface DataSocketOptions {
     onclose?: OnClose;
     onchannel?: OnChannel;
     emulateWebsocket?: boolean;
+    createDefaultMessage?: boolean;
 }
 export interface PeerOptions {
     peer: any;
@@ -45,7 +46,8 @@ export default class Peer {
     private _onclose;
     private _onchannel;
     private _emulateWebsocket;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
+    private _createDefaultMessage;
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, createDefaultMessage, }: PeerOptionsWithProxy & DataSocketOptions);
     private _socket?;
     get socket(): Socket;
     private _channel?;
