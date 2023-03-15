@@ -38,6 +38,7 @@ export interface DataSocketOptions {
   onclose?: OnClose;
   onchannel?: OnChannel;
   emulateWebsocket?: boolean;
+  createDefaultMessage?: boolean;
 }
 
 export interface PeerOptions {
@@ -59,6 +60,7 @@ export default class Peer {
   private _onclose: OnCloseBound;
   private _onchannel: OnChannelBound;
   private _emulateWebsocket: boolean;
+  private _createDefaultMessage: boolean;
 
   constructor({
     proxy,
@@ -70,6 +72,7 @@ export default class Peer {
     onclose,
     onchannel,
     emulateWebsocket = false,
+    createDefaultMessage = true,
   }: PeerOptionsWithProxy & DataSocketOptions) {
     this._proxy = proxy;
     this._peer = peer;
@@ -80,6 +83,7 @@ export default class Peer {
     this._onclose = onclose?.bind(undefined, this);
     this._onchannel = onchannel?.bind(undefined, this);
     this._emulateWebsocket = emulateWebsocket;
+    this._createDefaultMessage = createDefaultMessage;
   }
 
   private _socket?: Socket;
@@ -96,12 +100,15 @@ export default class Peer {
 
   async init() {
     const self = this;
+    let pipe;
     this._socket = new Socket({
       remoteAddress: self._peer.rawStream.remoteHost,
       remotePort: self._peer.rawStream.remotePort,
       remotePublicKey: self._peer.remotePublicKey,
       async write(data: any, cb: Function) {
-        pipe.send(data);
+        if (pipe) {
+          pipe.send(data);
+        }
         await self._onsend?.(data);
         cb();
       },
@@ -133,15 +140,18 @@ export default class Peer {
         await self._onclose?.(self._socket);
       },
     });
-    const pipe = this._channel.addMessage({
-      async onmessage(m: any) {
-        if (m instanceof Uint8Array) {
-          m = Buffer.from(m);
-        }
-        self._socket.emit("data", m);
-        await self._onreceive?.(m);
-      },
-    });
+
+    if (this._createDefaultMessage) {
+      pipe = this._channel.addMessage({
+        async onmessage(m: any) {
+          if (m instanceof Uint8Array) {
+            m = Buffer.from(m);
+          }
+          self._socket.emit("data", m);
+          await self._onreceive?.(m);
+        },
+      });
+    }
 
     await this._onchannel?.(this._channel);
     await this._channel.open();

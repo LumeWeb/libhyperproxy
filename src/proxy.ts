@@ -24,6 +24,7 @@ export default class Proxy {
     listen = false,
     autostart = false,
     emulateWebsocket = false,
+    createDefaultMessage = true,
   }: ProxyOptions) {
     this._swarm = swarm;
     this._protocol = protocol;
@@ -36,6 +37,7 @@ export default class Proxy {
       onclose,
       onchannel,
       emulateWebsocket,
+      createDefaultMessage,
     };
     this.init();
   }
