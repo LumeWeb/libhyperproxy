@@ -39,9 +39,10 @@ class Peer {
     async init() {
         const self = this;
         let pipe;
+        const raw = await maybeGetAsyncProperty(self._peer.rawStream);
         this._socket = new socket_js_1.default({
-            remoteAddress: self._peer.rawStream.remoteHost,
-            remotePort: self._peer.rawStream.remotePort,
+            remoteAddress: raw.remoteHost,
+            remotePort: raw.remotePort,
             remotePublicKey: self._peer.remotePublicKey,
             async write(data, cb) {
                 if (pipe) {
@@ -90,3 +91,17 @@ class Peer {
     }
 }
 exports.default = Peer;
+async function maybeGetAsyncProperty(object) {
+    if (typeof object === "function") {
+        object = object();
+    }
+    if (isPromise(object)) {
+        object = await object;
+    }
+    return object;
+}
+function isPromise(obj) {
+    return (!!obj &&
+        (typeof obj === "object" || typeof obj === "function") &&
+        typeof obj.then === "function");
+}
