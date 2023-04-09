@@ -105,7 +105,7 @@ export default class Peer {
     this._socket = new Socket({
       remoteAddress: raw.remoteHost,
       remotePort: raw.remotePort,
-      remotePublicKey: self._peer.remotePublicKey,
+      remotePublicKey: await maybeGetAsyncProperty(self._peer.remotePublicKey),
       async write(data: any, cb: Function) {
         if (pipe) {
           pipe.send(data);
