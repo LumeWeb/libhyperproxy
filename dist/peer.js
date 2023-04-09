@@ -43,7 +43,7 @@ class Peer {
         this._socket = new socket_js_1.default({
             remoteAddress: raw.remoteHost,
             remotePort: raw.remotePort,
-            remotePublicKey: self._peer.remotePublicKey,
+            remotePublicKey: await maybeGetAsyncProperty(self._peer.remotePublicKey),
             async write(data, cb) {
                 if (pipe) {
                     pipe.send(data);
