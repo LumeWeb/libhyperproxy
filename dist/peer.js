@@ -52,7 +52,7 @@ class Peer {
             },
             emulateWebsocket: self._emulateWebsocket,
         });
-        this._channel = this._muxer.createChannel({
+        this._channel = await this._muxer.createChannel({
             protocol: this._proxy.protocol,
             async onopen(m) {
                 if (!m) {
@@ -75,7 +75,7 @@ class Peer {
             },
         });
         if (this._createDefaultMessage) {
-            pipe = this._channel.addMessage({
+            pipe = await this._channel.addMessage({
                 async onmessage(m) {
                     if (m instanceof Uint8Array) {
                         m = buffer_1.Buffer.from(m);
