@@ -41,7 +41,7 @@ export default abstract class Proxy {
     this.init();
   }
 
-  private _socketOptions: DataSocketOptions;
+  protected _socketOptions: DataSocketOptions;
 
   get socketOptions(): DataSocketOptions {
     return this._socketOptions;
