@@ -7,7 +7,6 @@ const protomux_1 = __importDefault(require("protomux"));
 const peer_js_1 = __importDefault(require("./peer.js"));
 class Proxy {
     _listen;
-    _socketOptions;
     _autostart;
     constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen = false, autostart = false, emulateWebsocket = false, createDefaultMessage = true, }) {
         this._swarm = swarm;
@@ -24,6 +23,10 @@ class Proxy {
             createDefaultMessage,
         };
         this.init();
+    }
+    _socketOptions;
+    get socketOptions() {
+        return this._socketOptions;
     }
     _swarm;
     get swarm() {
