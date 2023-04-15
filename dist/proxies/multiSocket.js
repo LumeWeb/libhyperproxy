@@ -64,6 +64,9 @@ class MultiSocketProxy extends proxy_js_1.default {
             createDefaultMessage: false,
             ...options,
         });
+        this._socketOptions.onchannel = this.handleNewPeerChannel.bind(this);
+        this._socketOptions.onclose = this.handleClosePeer.bind(this);
+        this._socketOptions.onopen = this.handlePeer.bind(this);
         if (options.socketClass) {
             this.socketClass = options.socketClass;
         }
