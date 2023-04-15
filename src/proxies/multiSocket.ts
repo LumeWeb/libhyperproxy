@@ -80,6 +80,9 @@ export default class MultiSocketProxy extends Proxy {
       createDefaultMessage: false,
       ...options,
     });
+    this._socketOptions.onchannel = this.handleNewPeerChannel.bind(this);
+    this._socketOptions.onclose = this.handleClosePeer.bind(this);
+    this._socketOptions.onopen = this.handlePeer.bind(this);
     if (options.socketClass) {
       this.socketClass = options.socketClass;
     } else {
