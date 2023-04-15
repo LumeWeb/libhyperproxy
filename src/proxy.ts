@@ -9,9 +9,9 @@ export interface ProxyOptions extends DataSocketOptions {
 }
 
 export default abstract class Proxy {
-  private _listen: any;
-  private _socketOptions: DataSocketOptions;
-  private _autostart: boolean;
+  protected _listen: any;
+  protected _socketOptions: DataSocketOptions;
+  protected _autostart: boolean;
 
   constructor({
     swarm,
