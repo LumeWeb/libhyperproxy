@@ -5,7 +5,7 @@ export interface ProxyOptions extends DataSocketOptions {
     listen?: boolean;
     autostart?: boolean;
 }
-export default class Proxy {
+export default abstract class Proxy {
     private _listen;
     private _socketOptions;
     private _autostart;
