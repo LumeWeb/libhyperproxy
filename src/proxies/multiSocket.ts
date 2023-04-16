@@ -89,9 +89,10 @@ export default class MultiSocketProxy extends Proxy {
     await conn.init();
     this.emit("peer", conn);
   }
+
   private socketClass: any;
   private _peers: Map<string, PeerEntity> = new Map<string, PeerEntity>();
-  private _nextPeer = roundRobinFactory(this._peers);
+  private _nextPeer;
   private _server = false;
   private _allowedPorts = [];
 
@@ -109,6 +110,7 @@ export default class MultiSocketProxy extends Proxy {
     if (options.server) {
       this._server = true;
     }
+    this._nextPeer = roundRobinFactory(this._peers);
   }
 
   private _socketMap = new Map<number, number>();
