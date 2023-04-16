@@ -149,7 +149,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     async _registerOpenSocketMessage(peer) {
         const self = this;
-        const message = peer.channel.addMessage({
+        const message = await peer.channel.addMessage({
             encoding: {
                 preencode: compact_encoding_1.json.preencode,
                 encode: compact_encoding_1.json.encode,
@@ -183,7 +183,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     async _registerWriteSocketMessage(peer) {
         const self = this;
-        const message = peer.channel.addMessage({
+        const message = await peer.channel.addMessage({
             encoding: writeSocketEncoding,
             onmessage(m) {
                 self._sockets.get(m.id)?.push(m.data);
@@ -195,7 +195,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     async _registerCloseSocketMessage(peer) {
         const self = this;
-        const message = peer.channel.addMessage({
+        const message = await peer.channel.addMessage({
             encoding: socketEncoding,
             onmessage(m) {
                 self._sockets.get(m.id)?.end();
@@ -207,7 +207,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     async _registerTimeoutSocketMessage(peer) {
         const self = this;
-        const message = peer.channel.addMessage({
+        const message = await peer.channel.addMessage({
             encoding: socketEncoding,
             onmessage(m) {
                 // @ts-ignore
@@ -220,7 +220,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     async _registerErrorSocketMessage(peer) {
         const self = this;
-        const message = peer.channel.addMessage({
+        const message = await peer.channel.addMessage({
             encoding: errorSocketEncoding,
             onmessage(m) {
                 // @ts-ignore

@@ -41,7 +41,6 @@ class Peer extends peer_js_1.default {
     }
     async handleChannelOnClose(socket) {
         this._socket?.destroy();
-        await this._onclose?.(this._socket);
     }
     async initMessages() {
         const self = this;
