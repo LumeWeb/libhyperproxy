@@ -130,7 +130,7 @@ export default class MultiSocketProxy extends Proxy {
       }
     }
 
-    const pubkey = this._toString(peer.socket.remotePublicKey);
+    const pubkey = this._toString(peer.stream.remotePublicKey);
 
     if (this._peers.has(pubkey)) {
       this._peers.delete(pubkey);
@@ -188,7 +188,7 @@ export default class MultiSocketProxy extends Proxy {
           self._allowedPorts.length &&
           !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
         ) {
-          self.get(peer.socket.remotePublicKey).messages.errorSocket.send({
+          self.get(peer.stream.remotePublicKey).messages.errorSocket.send({
             id: (m as SocketRequest).id,
             err: new Error(
               `port ${(m as TcpSocketConnectOpts).port} not allowed`
@@ -204,7 +204,7 @@ export default class MultiSocketProxy extends Proxy {
             nextSocketId(),
             m,
             self,
-            self.get(peer.socket.remotePublicKey) as PeerEntity,
+            self.get(peer.stream.remotePublicKey) as PeerEntity,
             m
           ).connect();
           return;
@@ -218,7 +218,7 @@ export default class MultiSocketProxy extends Proxy {
         }
       },
     });
-    this.update(peer.socket.remotePublicKey, {
+    this.update(peer.stream.remotePublicKey, {
       messages: { openSocket: message },
     });
   }
@@ -231,7 +231,7 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.push(m.data);
       },
     });
-    this.update(peer.socket.remotePublicKey, {
+    this.update(peer.stream.remotePublicKey, {
       messages: { writeSocket: message },
     });
   }
@@ -244,7 +244,7 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.end();
       },
     });
-    this.update(peer.socket.remotePublicKey, {
+    this.update(peer.stream.remotePublicKey, {
       messages: { closeSocket: message },
     });
   }
@@ -258,7 +258,7 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.emit("timeout");
       },
     });
-    this.update(peer.socket.remotePublicKey, {
+    this.update(peer.stream.remotePublicKey, {
       messages: { timeoutSocket: message },
     });
   }
@@ -272,7 +272,7 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.emit("error", m.err);
       },
     });
-    this.update(peer.socket.remotePublicKey, {
+    this.update(peer.stream.remotePublicKey, {
       messages: { errorSocket: message },
     });
   }
