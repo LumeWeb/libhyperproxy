@@ -250,7 +250,7 @@ export default class MultiSocketProxy extends Proxy {
     const message = await peer.channel.addMessage({
       encoding: writeSocketEncoding,
       onmessage(m: WriteSocketRequest) {
-        self._sockets.get(m.id)?.push(m.data);
+        self._sockets.get(m.id)?.push(b4a.from(m.data));
       },
     });
     this.update(await this._getPublicKey(peer), {
