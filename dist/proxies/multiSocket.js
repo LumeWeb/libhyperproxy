@@ -45,6 +45,14 @@ const writeSocketEncoding = {
     },
 };
 const errorSocketEncoding = {
+    preencode(state, m) {
+        socketEncoding.preencode(state, m);
+        compact_encoding_1.json.preencode(state, (0, serialize_error_1.serializeError)(m.err));
+    },
+    encode(state, m) {
+        socketEncoding.encode(state, m);
+        compact_encoding_1.json.encode(state, (0, serialize_error_1.serializeError)(m.err));
+    },
     decode(state, m) {
         const socket = socketEncoding.decode(state, m);
         return {
