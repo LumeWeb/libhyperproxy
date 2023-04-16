@@ -68,7 +68,7 @@ class MultiSocketProxy extends proxy_js_1.default {
     }
     socketClass;
     _peers = new Map();
-    _nextPeer = (0, util_js_1.roundRobinFactory)(this._peers);
+    _nextPeer;
     _server = false;
     _allowedPorts = [];
     constructor(options) {
@@ -87,6 +87,7 @@ class MultiSocketProxy extends proxy_js_1.default {
         if (options.server) {
             this._server = true;
         }
+        this._nextPeer = (0, util_js_1.roundRobinFactory)(this._peers);
     }
     _socketMap = new Map();
     get socketMap() {
