@@ -77,7 +77,7 @@ export default class MultiSocketProxy extends Proxy {
       peer,
       muxer,
       ...options,
-    });
+    }).init();
   }
   private socketClass: any;
   private _peers: Map<string, PeerEntity> = new Map<string, PeerEntity>();
