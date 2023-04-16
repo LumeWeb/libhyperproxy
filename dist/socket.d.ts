@@ -1,6 +1,6 @@
 import { Duplex, DuplexEvents, Callback } from "streamx";
 type AddressFamily = "IPv6" | "IPv4";
-interface SocketOptions {
+export interface SocketOptions {
     allowHalfOpen?: boolean;
     remoteAddress?: string;
     remotePort?: number;

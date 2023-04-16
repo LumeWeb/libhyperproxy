@@ -54,16 +54,14 @@ const errorSocketEncoding = {
 };
 const nextSocketId = (0, util_js_1.idFactory)(1);
 class MultiSocketProxy extends proxy_js_1.default {
+    handlePeer({ peer, muxer, ...options }) { }
     socketClass;
     _peers = new Map();
     _nextPeer = (0, util_js_1.roundRobinFactory)(this._peers);
     _server = false;
     _allowedPorts = [];
     constructor(options) {
-        super({
-            createDefaultMessage: false,
-            ...options,
-        });
+        super(options);
         this._socketOptions.onchannel = this.handleNewPeerChannel.bind(this);
         this._socketOptions.onclose = this.handleClosePeer.bind(this);
         this._socketOptions.onopen = this.handlePeer.bind(this);

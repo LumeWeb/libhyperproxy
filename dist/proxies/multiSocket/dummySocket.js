@@ -1,19 +1,22 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const streamx_1 = require("streamx");
 const timers_1 = require("timers");
 const util_js_1 = require("../../util.js");
-class DummySocket extends streamx_1.Duplex {
+const socket_js_1 = __importDefault(require("../../socket.js"));
+class DummySocket extends socket_js_1.default {
     _options;
     _id;
     _proxy;
     _connectTimeout;
-    constructor(id, manager, peer, options) {
-        super();
+    constructor(id, manager, peer, connectOptions, socketOptions) {
+        super(socketOptions);
         this._id = id;
         this._proxy = manager;
         this._peer = peer;
-        this._options = options;
+        this._options = connectOptions;
         // @ts-ignore
         this.on("timeout", () => {
             if (this._connectTimeout) {

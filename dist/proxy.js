@@ -4,11 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const protomux_1 = __importDefault(require("protomux"));
-const peer_js_1 = __importDefault(require("./peer.js"));
 class Proxy {
     _listen;
     _autostart;
-    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen = false, autostart = false, emulateWebsocket = false, createDefaultMessage = true, }) {
+    constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen = false, autostart = false, emulateWebsocket = false, }) {
         this._swarm = swarm;
         this._protocol = protocol;
         this._listen = listen;
@@ -20,7 +19,6 @@ class Proxy {
             onclose,
             onchannel,
             emulateWebsocket,
-            createDefaultMessage,
         };
         this.init();
     }
@@ -35,10 +33,6 @@ class Proxy {
     _protocol;
     get protocol() {
         return this._protocol;
-    }
-    handlePeer({ peer, muxer, ...options }) {
-        const conn = new peer_js_1.default({ proxy: this, peer, muxer, ...options });
-        conn.init();
     }
     _init() {
         // Implement in subclasses

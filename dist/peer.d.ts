@@ -27,7 +27,6 @@ export interface DataSocketOptions {
     onclose?: OnClose;
     onchannel?: OnChannel;
     emulateWebsocket?: boolean;
-    createDefaultMessage?: boolean;
 }
 export interface PeerOptions {
     peer: any;
@@ -36,21 +35,25 @@ export interface PeerOptions {
 export interface PeerOptionsWithProxy extends PeerOptions {
     proxy: Proxy;
 }
-export default class Peer {
-    private _proxy;
-    private _peer;
-    private _muxer;
-    private _onopen;
-    private _onreceive;
-    private _onsend;
-    private _onclose;
-    private _onchannel;
-    private _emulateWebsocket;
-    private _createDefaultMessage;
-    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, createDefaultMessage, }: PeerOptionsWithProxy & DataSocketOptions);
-    private _socket?;
+export default abstract class Peer {
+    protected _proxy: Proxy;
+    protected _peer: any;
+    protected _muxer: any;
+    protected _onopen: OnOpenBound;
+    protected _onreceive: OnReceiveBound;
+    protected _onsend: OnSendBound;
+    protected _onclose: OnCloseBound;
+    protected _onchannel: OnChannelBound;
+    protected _emulateWebsocket: boolean;
+    constructor({ proxy, peer, muxer, onopen, onreceive, onsend, onclose, onchannel, emulateWebsocket, }: PeerOptionsWithProxy & DataSocketOptions);
+    protected _socket?: Socket;
     get socket(): Socket;
-    private _channel?;
+    protected _channel?: any;
     get channel(): any;
+    protected abstract initSocket(): any;
+    protected abstract handleChannelOnOpen(m: any): Promise<void>;
+    protected abstract handleChannelOnClose(socket: Socket): Promise<void>;
+    protected initChannel(): Promise<void>;
     init(): Promise<void>;
+    protected initMessages(): Promise<void>;
 }

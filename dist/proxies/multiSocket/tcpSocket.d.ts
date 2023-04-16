@@ -1,9 +1,10 @@
 /// <reference types="node" />
-import { Callback, Duplex } from "streamx";
+import { Callback } from "streamx";
 import { TcpSocketConnectOpts } from "net";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity } from "./types.js";
-export default class TcpSocket extends Duplex {
+import BaseSocket from "../../socket.js";
+export default class TcpSocket extends BaseSocket {
     private _options;
     private _id;
     private _remoteId;
