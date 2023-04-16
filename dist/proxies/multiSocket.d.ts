@@ -21,7 +21,7 @@ export default class MultiSocketProxy extends Proxy {
     get socketMap(): Map<number, number>;
     private _sockets;
     get sockets(): Map<number, any>;
-    handleNewPeerChannel(peer: Peer, channel: any): void;
+    handleNewPeerChannel(peer: Peer): void;
     handleClosePeer(peer: Peer): Promise<void>;
     get(pubkey: Uint8Array): PeerEntity | undefined;
     update(pubkey: Uint8Array, data: Partial<PeerEntity>): void;

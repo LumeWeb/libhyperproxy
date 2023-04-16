@@ -6,11 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const peer_js_1 = __importDefault(require("../../peer.js"));
 class Peer extends peer_js_1.default {
     async initSocket() { }
+    get stream() {
+        return this._muxer.stream;
+    }
     async handleChannelOnClose(socket) {
         return this._proxy.handleClosePeer(this);
     }
     async handleChannelOnOpen(m) {
-        await this._proxy.handleNewPeerChannel(this._peer, this._channel);
+        await this._proxy.handleNewPeerChannel(this);
     }
 }
 exports.default = Peer;
