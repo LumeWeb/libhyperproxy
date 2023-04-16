@@ -193,7 +193,7 @@ export default class MultiSocketProxy extends Proxy {
       encoding: {
         preencode: json.preencode,
         encode: json.encode,
-        decode: this._server ? json.encode : socketEncoding.decode,
+        decode: this._server ? json.decode : socketEncoding.decode,
       },
       async onmessage(m: SocketRequest | TcpSocketConnectOpts) {
         if (
