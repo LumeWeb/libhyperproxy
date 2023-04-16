@@ -113,14 +113,14 @@ export default class MultiSocketProxy extends Proxy {
     return this._sockets;
   }
 
-  handleNewPeerChannel(peer: Peer, channel: any) {
-    this.update(peer.socket.remotePublicKey, { peer });
+  handleNewPeerChannel(peer: Peer) {
+    this.update(peer.stream.remotePublicKey, { peer });
 
-    this._registerOpenSocketMessage(peer, channel);
-    this._registerWriteSocketMessage(peer, channel);
-    this._registerCloseSocketMessage(peer, channel);
-    this._registerTimeoutSocketMessage(peer, channel);
-    this._registerErrorSocketMessage(peer, channel);
+    this._registerOpenSocketMessage(peer);
+    this._registerWriteSocketMessage(peer);
+    this._registerCloseSocketMessage(peer);
+    this._registerTimeoutSocketMessage(peer);
+    this._registerErrorSocketMessage(peer);
   }
 
   async handleClosePeer(peer: Peer) {
@@ -175,9 +175,9 @@ export default class MultiSocketProxy extends Proxy {
     return socket;
   }
 
-  private _registerOpenSocketMessage(peer: Peer, channel: any) {
+  private _registerOpenSocketMessage(peer: Peer) {
     const self = this;
-    const message = channel.addMessage({
+    const message = peer.channel.addMessage({
       encoding: {
         preencode: json.preencode,
         encode: json.encode,
@@ -223,9 +223,9 @@ export default class MultiSocketProxy extends Proxy {
     });
   }
 
-  private _registerWriteSocketMessage(peer: Peer, channel: any) {
+  private _registerWriteSocketMessage(peer: Peer) {
     const self = this;
-    const message = channel.addMessage({
+    const message = peer.channel.addMessage({
       encoding: writeSocketEncoding,
       onmessage(m: WriteSocketRequest) {
         self._sockets.get(m.id)?.push(m.data);
@@ -236,9 +236,9 @@ export default class MultiSocketProxy extends Proxy {
     });
   }
 
-  private _registerCloseSocketMessage(peer: Peer, channel: any) {
+  private _registerCloseSocketMessage(peer: Peer) {
     const self = this;
-    const message = channel.addMessage({
+    const message = peer.channel.addMessage({
       encoding: socketEncoding,
       onmessage(m: CloseSocketRequest) {
         self._sockets.get(m.id)?.end();
@@ -249,9 +249,9 @@ export default class MultiSocketProxy extends Proxy {
     });
   }
 
-  private _registerTimeoutSocketMessage(peer: Peer, channel: any) {
+  private _registerTimeoutSocketMessage(peer: Peer) {
     const self = this;
-    const message = channel.addMessage({
+    const message = peer.channel.addMessage({
       encoding: socketEncoding,
       onmessage(m: SocketRequest) {
         // @ts-ignore
@@ -263,9 +263,9 @@ export default class MultiSocketProxy extends Proxy {
     });
   }
 
-  private _registerErrorSocketMessage(peer: Peer, channel: any) {
+  private _registerErrorSocketMessage(peer: Peer) {
     const self = this;
-    const message = channel.addMessage({
+    const message = peer.channel.addMessage({
       encoding: errorSocketEncoding,
       onmessage(m: ErrorSocketRequest) {
         // @ts-ignore
