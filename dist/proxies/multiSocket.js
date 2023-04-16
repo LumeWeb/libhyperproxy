@@ -158,7 +158,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             async onmessage(m) {
                 if (self._allowedPorts.length &&
                     !self._allowedPorts.includes(m.port)) {
-                    self.get(await this._getPublicKey(peer)).messages.errorSocket.send({
+                    self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
                         id: m.id,
                         err: new Error(`port ${m.port} not allowed`),
                     });
@@ -166,7 +166,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 }
                 m = m;
                 if (self._server) {
-                    new self.socketClass(nextSocketId(), m, self, self.get(await this._getPublicKey(peer)), m).connect();
+                    new self.socketClass(nextSocketId(), m, self, self.get(await self._getPublicKey(peer)), m).connect();
                     return;
                 }
                 const socket = self._sockets.get(m.id);
