@@ -172,9 +172,7 @@ export default class MultiSocketProxy extends Proxy {
     } as PeerEntity);
   }
 
-  public async createSocket(
-    options: TcpSocketConnectOpts
-  ): Promise<typeof this.socketClass> {
+  public createSocket(options: TcpSocketConnectOpts): typeof this.socketClass {
     if (!this._peers.size) {
       throw new Error("no peers found");
     }
