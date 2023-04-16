@@ -5,7 +5,11 @@ import { deserializeError } from "serialize-error";
 import b4a from "b4a";
 import type { TcpSocketConnectOpts } from "net";
 import { DataSocketOptions, PeerOptions } from "../peer.js";
-import { roundRobinFactory, idFactory } from "../util.js";
+import {
+  roundRobinFactory,
+  idFactory,
+  maybeGetAsyncProperty,
+} from "../util.js";
 import {
   CloseSocketRequest,
   ErrorSocketRequest,
@@ -119,14 +123,16 @@ export default class MultiSocketProxy extends Proxy {
     return this._sockets;
   }
 
-  handleNewPeerChannel(peer: Peer) {
-    this.update(peer.stream.remotePublicKey, { peer });
+  async handleNewPeerChannel(peer: Peer) {
+    this.update(await this._getPublicKey(peer), {
+      peer,
+    });
 
-    this._registerOpenSocketMessage(peer);
-    this._registerWriteSocketMessage(peer);
-    this._registerCloseSocketMessage(peer);
-    this._registerTimeoutSocketMessage(peer);
-    this._registerErrorSocketMessage(peer);
+    await this._registerOpenSocketMessage(peer);
+    await this._registerWriteSocketMessage(peer);
+    await this._registerCloseSocketMessage(peer);
+    await this._registerTimeoutSocketMessage(peer);
+    await this._registerErrorSocketMessage(peer);
   }
 
   async handleClosePeer(peer: Peer) {
@@ -136,7 +142,7 @@ export default class MultiSocketProxy extends Proxy {
       }
     }
 
-    const pubkey = this._toString(peer.stream.remotePublicKey);
+    const pubkey = this._toString(await this._getPublicKey(peer));
 
     if (this._peers.has(pubkey)) {
       this._peers.delete(pubkey);
@@ -181,7 +187,7 @@ export default class MultiSocketProxy extends Proxy {
     return socket;
   }
 
-  private _registerOpenSocketMessage(peer: Peer) {
+  private async _registerOpenSocketMessage(peer: Peer) {
     const self = this;
     const message = peer.channel.addMessage({
       encoding: {
@@ -194,7 +200,7 @@ export default class MultiSocketProxy extends Proxy {
           self._allowedPorts.length &&
           !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
         ) {
-          self.get(peer.stream.remotePublicKey).messages.errorSocket.send({
+          self.get(await this._getPublicKey(peer)).messages.errorSocket.send({
             id: (m as SocketRequest).id,
             err: new Error(
               `port ${(m as TcpSocketConnectOpts).port} not allowed`
@@ -210,7 +216,7 @@ export default class MultiSocketProxy extends Proxy {
             nextSocketId(),
             m,
             self,
-            self.get(peer.stream.remotePublicKey) as PeerEntity,
+            self.get(await this._getPublicKey(peer)) as PeerEntity,
             m
           ).connect();
           return;
@@ -224,12 +230,12 @@ export default class MultiSocketProxy extends Proxy {
         }
       },
     });
-    this.update(peer.stream.remotePublicKey, {
+    this.update(await this._getPublicKey(peer), {
       messages: { openSocket: message },
     });
   }
 
-  private _registerWriteSocketMessage(peer: Peer) {
+  private async _registerWriteSocketMessage(peer: Peer) {
     const self = this;
     const message = peer.channel.addMessage({
       encoding: writeSocketEncoding,
@@ -237,12 +243,12 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.push(m.data);
       },
     });
-    this.update(peer.stream.remotePublicKey, {
+    this.update(await this._getPublicKey(peer), {
       messages: { writeSocket: message },
     });
   }
 
-  private _registerCloseSocketMessage(peer: Peer) {
+  private async _registerCloseSocketMessage(peer: Peer) {
     const self = this;
     const message = peer.channel.addMessage({
       encoding: socketEncoding,
@@ -250,12 +256,12 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.end();
       },
     });
-    this.update(peer.stream.remotePublicKey, {
+    this.update(await this._getPublicKey(peer), {
       messages: { closeSocket: message },
     });
   }
 
-  private _registerTimeoutSocketMessage(peer: Peer) {
+  private async _registerTimeoutSocketMessage(peer: Peer) {
     const self = this;
     const message = peer.channel.addMessage({
       encoding: socketEncoding,
@@ -264,12 +270,12 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.emit("timeout");
       },
     });
-    this.update(peer.stream.remotePublicKey, {
+    this.update(await this._getPublicKey(peer), {
       messages: { timeoutSocket: message },
     });
   }
 
-  private _registerErrorSocketMessage(peer: Peer) {
+  private async _registerErrorSocketMessage(peer: Peer) {
     const self = this;
     const message = peer.channel.addMessage({
       encoding: errorSocketEncoding,
@@ -278,12 +284,16 @@ export default class MultiSocketProxy extends Proxy {
         self._sockets.get(m.id)?.emit("error", m.err);
       },
     });
-    this.update(peer.stream.remotePublicKey, {
+    this.update(await this._getPublicKey(peer), {
       messages: { errorSocket: message },
     });
   }
 
   private _toString(pubkey: Uint8Array) {
     return b4a.from(pubkey).toString("hex");
+  }
+
+  private async _getPublicKey(peer: Peer) {
+    return maybeGetAsyncProperty(peer.stream.remotePublicKey);
   }
 }
