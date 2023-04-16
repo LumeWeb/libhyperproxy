@@ -164,17 +164,19 @@ class MultiSocketProxy extends proxy_js_1.default {
                 decode: this._server ? compact_encoding_1.json.decode : socketEncoding.decode,
             },
             async onmessage(m) {
-                if (self._allowedPorts.length &&
-                    !self._allowedPorts.includes(m.port)) {
-                    self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
-                        id: m.id,
-                        err: new Error(`port ${m.port} not allowed`),
-                    });
-                    return;
+                if (self._server) {
+                    if (self._allowedPorts.length &&
+                        !self._allowedPorts.includes(m.port)) {
+                        self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
+                            id: m.id,
+                            err: new Error(`port ${m.port} not allowed`),
+                        });
+                        return;
+                    }
                 }
                 m = m;
                 if (self._server) {
-                    new self.socketClass(nextSocketId(), m, self, self.get(await self._getPublicKey(peer)), m).connect();
+                    new self.socketClass(nextSocketId(), m.id, self, self.get(await self._getPublicKey(peer)), m).connect();
                     return;
                 }
                 const socket = self._sockets.get(m.id);
