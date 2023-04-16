@@ -70,14 +70,20 @@ const errorSocketEncoding = {
 const nextSocketId = idFactory(1);
 
 export default class MultiSocketProxy extends Proxy {
-  handlePeer({ peer, muxer, ...options }: DataSocketOptions & PeerOptions) {
-    new Peer({
+  async handlePeer({
+    peer,
+    muxer,
+    ...options
+  }: DataSocketOptions & PeerOptions) {
+    const conn = new Peer({
       ...this.socketOptions,
       proxy: this,
       peer,
       muxer,
       ...options,
-    }).init();
+    });
+    await conn.init();
+    this.emit("peer", conn);
   }
   private socketClass: any;
   private _peers: Map<string, PeerEntity> = new Map<string, PeerEntity>();

@@ -1,5 +1,6 @@
 import Protomux from "protomux";
 import { DataSocketOptions, PeerOptions } from "./peer.js";
+import EventEmitter from "events";
 
 export interface ProxyOptions extends DataSocketOptions {
   swarm: any;
@@ -8,7 +9,7 @@ export interface ProxyOptions extends DataSocketOptions {
   autostart?: boolean;
 }
 
-export default abstract class Proxy {
+export default abstract class Proxy extends EventEmitter {
   protected _listen: any;
   protected _autostart: boolean;
 
@@ -24,6 +25,7 @@ export default abstract class Proxy {
     autostart = false,
     emulateWebsocket = false,
   }: ProxyOptions) {
+    super();
     this._swarm = swarm;
     this._protocol = protocol;
     this._listen = listen;
