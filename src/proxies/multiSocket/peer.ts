@@ -3,6 +3,9 @@ import Socket from "../../socket.js";
 import MultiSocketProxy from "../multiSocket.js";
 
 export default class Peer extends BasePeer {
+  protected async initMessages(): Promise<void> {
+    await this._proxy.handleNewPeerChannel(this);
+  }
   protected declare _proxy: MultiSocketProxy;
   protected async initSocket() {}
 
@@ -14,8 +17,5 @@ export default class Peer extends BasePeer {
     return this._proxy.handleClosePeer(this);
   }
 
-  protected async handleChannelOnOpen(m: any): Promise<void> {
-    await this._proxy.handleNewPeerChannel(this);
-    this._proxy.emit("peerOpen", this);
-  }
+  protected async handleChannelOnOpen(m: any): Promise<void> {}
 }
