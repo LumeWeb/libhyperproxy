@@ -55,14 +55,16 @@ const errorSocketEncoding = {
 };
 const nextSocketId = (0, util_js_1.idFactory)(1);
 class MultiSocketProxy extends proxy_js_1.default {
-    handlePeer({ peer, muxer, ...options }) {
-        new peer_js_1.default({
+    async handlePeer({ peer, muxer, ...options }) {
+        const conn = new peer_js_1.default({
             ...this.socketOptions,
             proxy: this,
             peer,
             muxer,
             ...options,
-        }).init();
+        });
+        await conn.init();
+        this.emit("peer", conn);
     }
     socketClass;
     _peers = new Map();

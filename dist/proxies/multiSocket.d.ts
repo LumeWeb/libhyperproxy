@@ -10,7 +10,7 @@ export interface MultiSocketProxyOptions extends ProxyOptions {
     allowedPorts?: number[];
 }
 export default class MultiSocketProxy extends Proxy {
-    handlePeer({ peer, muxer, ...options }: DataSocketOptions & PeerOptions): void;
+    handlePeer({ peer, muxer, ...options }: DataSocketOptions & PeerOptions): Promise<void>;
     private socketClass;
     private _peers;
     private _nextPeer;

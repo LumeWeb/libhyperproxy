@@ -4,10 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const protomux_1 = __importDefault(require("protomux"));
-class Proxy {
+const events_1 = __importDefault(require("events"));
+class Proxy extends events_1.default {
     _listen;
     _autostart;
     constructor({ swarm, protocol, onopen, onreceive, onsend, onclose, onchannel, listen = false, autostart = false, emulateWebsocket = false, }) {
+        super();
         this._swarm = swarm;
         this._protocol = protocol;
         this._listen = listen;
