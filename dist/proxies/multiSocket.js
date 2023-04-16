@@ -108,7 +108,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 item[1].end();
             }
         }
-        const pubkey = this._toString(peer.socket.remotePublicKey);
+        const pubkey = this._toString(peer.stream.remotePublicKey);
         if (this._peers.has(pubkey)) {
             this._peers.delete(pubkey);
         }
@@ -153,7 +153,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             async onmessage(m) {
                 if (self._allowedPorts.length &&
                     !self._allowedPorts.includes(m.port)) {
-                    self.get(peer.socket.remotePublicKey).messages.errorSocket.send({
+                    self.get(peer.stream.remotePublicKey).messages.errorSocket.send({
                         id: m.id,
                         err: new Error(`port ${m.port} not allowed`),
                     });
@@ -161,7 +161,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 }
                 m = m;
                 if (self._server) {
-                    new self.socketClass(nextSocketId(), m, self, self.get(peer.socket.remotePublicKey), m).connect();
+                    new self.socketClass(nextSocketId(), m, self, self.get(peer.stream.remotePublicKey), m).connect();
                     return;
                 }
                 const socket = self._sockets.get(m.id);
@@ -172,7 +172,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 }
             },
         });
-        this.update(peer.socket.remotePublicKey, {
+        this.update(peer.stream.remotePublicKey, {
             messages: { openSocket: message },
         });
     }
@@ -184,7 +184,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.push(m.data);
             },
         });
-        this.update(peer.socket.remotePublicKey, {
+        this.update(peer.stream.remotePublicKey, {
             messages: { writeSocket: message },
         });
     }
@@ -196,7 +196,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.end();
             },
         });
-        this.update(peer.socket.remotePublicKey, {
+        this.update(peer.stream.remotePublicKey, {
             messages: { closeSocket: message },
         });
     }
@@ -209,7 +209,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.emit("timeout");
             },
         });
-        this.update(peer.socket.remotePublicKey, {
+        this.update(peer.stream.remotePublicKey, {
             messages: { timeoutSocket: message },
         });
     }
@@ -222,7 +222,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.emit("error", m.err);
             },
         });
-        this.update(peer.socket.remotePublicKey, {
+        this.update(peer.stream.remotePublicKey, {
             messages: { errorSocket: message },
         });
     }
