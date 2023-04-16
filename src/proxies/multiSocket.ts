@@ -1,7 +1,7 @@
 import Proxy, { ProxyOptions } from "../proxy.js";
 import TcpSocket from "./multiSocket/tcpSocket.js";
 import { json, raw, uint } from "compact-encoding";
-import { deserializeError } from "serialize-error";
+import { deserializeError, serializeError } from "serialize-error";
 import b4a from "b4a";
 import type { TcpSocketConnectOpts } from "net";
 import { DataSocketOptions, PeerOptions } from "../peer.js";
@@ -62,6 +62,14 @@ const writeSocketEncoding = {
 };
 
 const errorSocketEncoding = {
+  preencode(state: any, m: ErrorSocketRequest) {
+    socketEncoding.preencode(state, m);
+    json.preencode(state, serializeError(m.err));
+  },
+  encode(state: any, m: ErrorSocketRequest) {
+    socketEncoding.encode(state, m);
+    json.encode(state, serializeError(m.err));
+  },
   decode(state: any, m: any): ErrorSocketRequest {
     const socket = socketEncoding.decode(state, m);
     return {
