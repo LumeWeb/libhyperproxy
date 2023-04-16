@@ -16,5 +16,6 @@ export default class Peer extends BasePeer {
 
   protected async handleChannelOnOpen(m: any): Promise<void> {
     await this._proxy.handleNewPeerChannel(this);
+    this._proxy.emit("peerOpen", this);
   }
 }
