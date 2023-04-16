@@ -105,14 +105,23 @@ export default abstract class Peer {
 
     this._channel = await this._muxer.createChannel({
       protocol: this._proxy.protocol,
-      onopen: this.handleChannelOnOpen.bind(this),
-      onclose: this.handleChannelOnClose.bind(this),
+      onopen: async (m: any) => {
+        await this.handleChannelOnOpen(m);
+        // @ts-ignore
+        await this._onopen?.(this._channel);
+      },
+      onclose: async (socket: Socket) => {
+        await this.handleChannelOnClose(socket);
+        // @ts-ignore
+        await this._onclose?.();
+      },
     });
 
     await this.initMessages();
 
     await this._onchannel?.(this._channel);
     await this._channel.open();
+    this._proxy.emit("peerChannelOpen", this);
   }
 
   async init() {
