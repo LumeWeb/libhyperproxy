@@ -62,7 +62,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             peer,
             muxer,
             ...options,
-        });
+        }).init();
     }
     socketClass;
     _peers = new Map();
