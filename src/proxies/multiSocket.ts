@@ -204,17 +204,19 @@ export default class MultiSocketProxy extends Proxy {
         decode: this._server ? json.decode : socketEncoding.decode,
       },
       async onmessage(m: SocketRequest | TcpSocketConnectOpts) {
-        if (
-          self._allowedPorts.length &&
-          !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
-        ) {
-          self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
-            id: (m as SocketRequest).id,
-            err: new Error(
-              `port ${(m as TcpSocketConnectOpts).port} not allowed`
-            ),
-          });
-          return;
+        if (self._server) {
+          if (
+            self._allowedPorts.length &&
+            !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
+          ) {
+            self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
+              id: (m as SocketRequest).id,
+              err: new Error(
+                `port ${(m as TcpSocketConnectOpts).port} not allowed`
+              ),
+            });
+            return;
+          }
         }
 
         m = m as SocketRequest;
