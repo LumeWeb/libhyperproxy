@@ -159,8 +159,8 @@ class MultiSocketProxy extends proxy_js_1.default {
         const self = this;
         const message = await peer.channel.addMessage({
             encoding: {
-                preencode: compact_encoding_1.json.preencode,
-                encode: compact_encoding_1.json.encode,
+                preencode: this._server ? socketEncoding.preencode : compact_encoding_1.json.preencode,
+                encode: this._server ? socketEncoding.encode : compact_encoding_1.json.encode,
                 decode: this._server ? compact_encoding_1.json.decode : socketEncoding.decode,
             },
             async onmessage(m) {
