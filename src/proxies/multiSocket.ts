@@ -200,7 +200,7 @@ export default class MultiSocketProxy extends Proxy {
           self._allowedPorts.length &&
           !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
         ) {
-          self.get(await this._getPublicKey(peer)).messages.errorSocket.send({
+          self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
             id: (m as SocketRequest).id,
             err: new Error(
               `port ${(m as TcpSocketConnectOpts).port} not allowed`
@@ -216,7 +216,7 @@ export default class MultiSocketProxy extends Proxy {
             nextSocketId(),
             m,
             self,
-            self.get(await this._getPublicKey(peer)) as PeerEntity,
+            self.get(await self._getPublicKey(peer)) as PeerEntity,
             m
           ).connect();
           return;
