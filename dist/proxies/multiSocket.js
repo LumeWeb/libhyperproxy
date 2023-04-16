@@ -96,13 +96,15 @@ class MultiSocketProxy extends proxy_js_1.default {
     get sockets() {
         return this._sockets;
     }
-    handleNewPeerChannel(peer) {
-        this.update(peer.stream.remotePublicKey, { peer });
-        this._registerOpenSocketMessage(peer);
-        this._registerWriteSocketMessage(peer);
-        this._registerCloseSocketMessage(peer);
-        this._registerTimeoutSocketMessage(peer);
-        this._registerErrorSocketMessage(peer);
+    async handleNewPeerChannel(peer) {
+        this.update(await this._getPublicKey(peer), {
+            peer,
+        });
+        await this._registerOpenSocketMessage(peer);
+        await this._registerWriteSocketMessage(peer);
+        await this._registerCloseSocketMessage(peer);
+        await this._registerTimeoutSocketMessage(peer);
+        await this._registerErrorSocketMessage(peer);
     }
     async handleClosePeer(peer) {
         for (const item of this._sockets) {
@@ -110,7 +112,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 item[1].end();
             }
         }
-        const pubkey = this._toString(peer.stream.remotePublicKey);
+        const pubkey = this._toString(await this._getPublicKey(peer));
         if (this._peers.has(pubkey)) {
             this._peers.delete(pubkey);
         }
@@ -144,7 +146,7 @@ class MultiSocketProxy extends proxy_js_1.default {
         this._sockets.set(socketId, socket);
         return socket;
     }
-    _registerOpenSocketMessage(peer) {
+    async _registerOpenSocketMessage(peer) {
         const self = this;
         const message = peer.channel.addMessage({
             encoding: {
@@ -155,7 +157,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             async onmessage(m) {
                 if (self._allowedPorts.length &&
                     !self._allowedPorts.includes(m.port)) {
-                    self.get(peer.stream.remotePublicKey).messages.errorSocket.send({
+                    self.get(await this._getPublicKey(peer)).messages.errorSocket.send({
                         id: m.id,
                         err: new Error(`port ${m.port} not allowed`),
                     });
@@ -163,7 +165,7 @@ class MultiSocketProxy extends proxy_js_1.default {
                 }
                 m = m;
                 if (self._server) {
-                    new self.socketClass(nextSocketId(), m, self, self.get(peer.stream.remotePublicKey), m).connect();
+                    new self.socketClass(nextSocketId(), m, self, self.get(await this._getPublicKey(peer)), m).connect();
                     return;
                 }
                 const socket = self._sockets.get(m.id);
@@ -174,11 +176,11 @@ class MultiSocketProxy extends proxy_js_1.default {
                 }
             },
         });
-        this.update(peer.stream.remotePublicKey, {
+        this.update(await this._getPublicKey(peer), {
             messages: { openSocket: message },
         });
     }
-    _registerWriteSocketMessage(peer) {
+    async _registerWriteSocketMessage(peer) {
         const self = this;
         const message = peer.channel.addMessage({
             encoding: writeSocketEncoding,
@@ -186,11 +188,11 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.push(m.data);
             },
         });
-        this.update(peer.stream.remotePublicKey, {
+        this.update(await this._getPublicKey(peer), {
             messages: { writeSocket: message },
         });
     }
-    _registerCloseSocketMessage(peer) {
+    async _registerCloseSocketMessage(peer) {
         const self = this;
         const message = peer.channel.addMessage({
             encoding: socketEncoding,
@@ -198,11 +200,11 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.end();
             },
         });
-        this.update(peer.stream.remotePublicKey, {
+        this.update(await this._getPublicKey(peer), {
             messages: { closeSocket: message },
         });
     }
-    _registerTimeoutSocketMessage(peer) {
+    async _registerTimeoutSocketMessage(peer) {
         const self = this;
         const message = peer.channel.addMessage({
             encoding: socketEncoding,
@@ -211,11 +213,11 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.emit("timeout");
             },
         });
-        this.update(peer.stream.remotePublicKey, {
+        this.update(await this._getPublicKey(peer), {
             messages: { timeoutSocket: message },
         });
     }
-    _registerErrorSocketMessage(peer) {
+    async _registerErrorSocketMessage(peer) {
         const self = this;
         const message = peer.channel.addMessage({
             encoding: errorSocketEncoding,
@@ -224,12 +226,15 @@ class MultiSocketProxy extends proxy_js_1.default {
                 self._sockets.get(m.id)?.emit("error", m.err);
             },
         });
-        this.update(peer.stream.remotePublicKey, {
+        this.update(await this._getPublicKey(peer), {
             messages: { errorSocket: message },
         });
     }
     _toString(pubkey) {
         return b4a_1.default.from(pubkey).toString("hex");
+    }
+    async _getPublicKey(peer) {
+        return (0, util_js_1.maybeGetAsyncProperty)(peer.stream.remotePublicKey);
     }
 }
 exports.default = MultiSocketProxy;
