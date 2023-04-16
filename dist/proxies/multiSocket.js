@@ -153,7 +153,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             encoding: {
                 preencode: compact_encoding_1.json.preencode,
                 encode: compact_encoding_1.json.encode,
-                decode: this._server ? compact_encoding_1.json.encode : socketEncoding.decode,
+                decode: this._server ? compact_encoding_1.json.decode : socketEncoding.decode,
             },
             async onmessage(m) {
                 if (self._allowedPorts.length &&
