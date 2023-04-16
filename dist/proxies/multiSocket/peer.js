@@ -14,6 +14,7 @@ class Peer extends peer_js_1.default {
     }
     async handleChannelOnOpen(m) {
         await this._proxy.handleNewPeerChannel(this);
+        this._proxy.emit("peerOpen", this);
     }
 }
 exports.default = Peer;
