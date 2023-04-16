@@ -1,5 +1,5 @@
 import Protomux from "protomux";
-import Peer, { PeerOptions, DataSocketOptions } from "./peer.js";
+import { DataSocketOptions, PeerOptions } from "./peer.js";
 
 export interface ProxyOptions extends DataSocketOptions {
   swarm: any;
@@ -23,7 +23,6 @@ export default abstract class Proxy {
     listen = false,
     autostart = false,
     emulateWebsocket = false,
-    createDefaultMessage = true,
   }: ProxyOptions) {
     this._swarm = swarm;
     this._protocol = protocol;
@@ -36,7 +35,6 @@ export default abstract class Proxy {
       onclose,
       onchannel,
       emulateWebsocket,
-      createDefaultMessage,
     };
     this.init();
   }
@@ -58,14 +56,12 @@ export default abstract class Proxy {
   get protocol(): string {
     return this._protocol;
   }
-  public handlePeer({
+
+  protected abstract handlePeer({
     peer,
     muxer,
     ...options
-  }: DataSocketOptions & PeerOptions) {
-    const conn = new Peer({ proxy: this, peer, muxer, ...options });
-    conn.init();
-  }
+  }: DataSocketOptions & PeerOptions);
 
   protected _init() {
     // Implement in subclasses

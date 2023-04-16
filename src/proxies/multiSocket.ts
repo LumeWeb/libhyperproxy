@@ -4,7 +4,7 @@ import { json, raw, uint } from "compact-encoding";
 import { deserializeError } from "serialize-error";
 import b4a from "b4a";
 import type { TcpSocketConnectOpts } from "net";
-import Peer from "../peer.js";
+import Peer, { DataSocketOptions, PeerOptions } from "../peer.js";
 import { roundRobinFactory, idFactory } from "../util.js";
 import {
   CloseSocketRequest,
@@ -69,6 +69,7 @@ const errorSocketEncoding = {
 const nextSocketId = idFactory(1);
 
 export default class MultiSocketProxy extends Proxy {
+  handlePeer({ peer, muxer, ...options }: DataSocketOptions & PeerOptions) {}
   private socketClass: any;
   private _peers: Map<string, PeerEntity> = new Map<string, PeerEntity>();
   private _nextPeer = roundRobinFactory(this._peers);
@@ -76,10 +77,7 @@ export default class MultiSocketProxy extends Proxy {
   private _allowedPorts = [];
 
   constructor(options: MultiSocketProxyOptions) {
-    super({
-      createDefaultMessage: false,
-      ...options,
-    });
+    super(options);
     this._socketOptions.onchannel = this.handleNewPeerChannel.bind(this);
     this._socketOptions.onclose = this.handleClosePeer.bind(this);
     this._socketOptions.onopen = this.handlePeer.bind(this);

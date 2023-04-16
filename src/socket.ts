@@ -6,7 +6,7 @@ const IPV6 = "IPv6";
 
 type AddressFamily = "IPv6" | "IPv4";
 
-interface SocketOptions {
+export interface SocketOptions {
   allowHalfOpen?: boolean;
   remoteAddress?: string;
   remotePort?: number;

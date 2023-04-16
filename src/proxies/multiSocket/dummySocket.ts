@@ -4,8 +4,9 @@ import { clearTimeout } from "timers";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity, SocketRequest, WriteSocketRequest } from "./types.js";
 import { maybeGetAsyncProperty } from "../../util.js";
+import Socket, { SocketOptions } from "../../socket.js";
 
-export default class DummySocket extends Duplex {
+export default class DummySocket extends Socket {
   private _options: TcpSocketConnectOpts;
   private _id: number;
   private _proxy: MultiSocketProxy;
@@ -16,13 +17,14 @@ export default class DummySocket extends Duplex {
     id: number,
     manager: MultiSocketProxy,
     peer: PeerEntity,
-    options: TcpSocketConnectOpts
+    connectOptions: TcpSocketConnectOpts,
+    socketOptions: SocketOptions
   ) {
-    super();
+    super(socketOptions);
     this._id = id;
     this._proxy = manager;
     this._peer = peer;
-    this._options = options;
+    this._options = connectOptions;
 
     // @ts-ignore
     this.on("timeout", () => {

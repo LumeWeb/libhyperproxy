@@ -3,8 +3,9 @@ import { Socket, TcpSocketConnectOpts } from "net";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity, SocketRequest, WriteSocketRequest } from "./types.js";
 import * as net from "net";
+import BaseSocket from "../../socket.js";
 
-export default class TcpSocket extends Duplex {
+export default class TcpSocket extends BaseSocket {
   private _options;
   private _id: number;
   private _remoteId: number;
