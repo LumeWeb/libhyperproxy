@@ -43,7 +43,6 @@ export default class Peer extends BasePeer {
 
   protected async handleChannelOnClose(socket: Socket): Promise<void> {
     this._socket?.destroy();
-    await this._onclose?.(this._socket);
   }
 
   protected async initMessages(): Promise<void> {
