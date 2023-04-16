@@ -224,7 +224,7 @@ export default class MultiSocketProxy extends Proxy {
         if (self._server) {
           new self.socketClass(
             nextSocketId(),
-            m,
+            m.id,
             self,
             self.get(await self._getPublicKey(peer)) as PeerEntity,
             m
