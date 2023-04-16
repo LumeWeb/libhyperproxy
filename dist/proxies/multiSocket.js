@@ -10,6 +10,7 @@ const serialize_error_1 = require("serialize-error");
 const b4a_1 = __importDefault(require("b4a"));
 const util_js_1 = require("../util.js");
 const dummySocket_js_1 = __importDefault(require("./multiSocket/dummySocket.js"));
+const peer_js_1 = __importDefault(require("./multiSocket/peer.js"));
 const socketEncoding = {
     preencode(state, m) {
         compact_encoding_1.uint.preencode(state, m.id);
@@ -54,7 +55,15 @@ const errorSocketEncoding = {
 };
 const nextSocketId = (0, util_js_1.idFactory)(1);
 class MultiSocketProxy extends proxy_js_1.default {
-    handlePeer({ peer, muxer, ...options }) { }
+    handlePeer({ peer, muxer, ...options }) {
+        new peer_js_1.default({
+            ...this.socketOptions,
+            proxy: this,
+            peer,
+            muxer,
+            ...options,
+        });
+    }
     socketClass;
     _peers = new Map();
     _nextPeer = (0, util_js_1.roundRobinFactory)(this._peers);
@@ -62,9 +71,6 @@ class MultiSocketProxy extends proxy_js_1.default {
     _allowedPorts = [];
     constructor(options) {
         super(options);
-        this._socketOptions.onchannel = this.handleNewPeerChannel.bind(this);
-        this._socketOptions.onclose = this.handleClosePeer.bind(this);
-        this._socketOptions.onopen = this.handlePeer.bind(this);
         if (options.socketClass) {
             this.socketClass = options.socketClass;
         }

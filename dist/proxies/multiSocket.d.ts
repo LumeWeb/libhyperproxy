@@ -1,8 +1,9 @@
 /// <reference types="node" />
 import Proxy, { ProxyOptions } from "../proxy.js";
 import type { TcpSocketConnectOpts } from "net";
-import Peer, { DataSocketOptions, PeerOptions } from "../peer.js";
+import { DataSocketOptions, PeerOptions } from "../peer.js";
 import { PeerEntity } from "./multiSocket/types.js";
+import Peer from "./multiSocket/peer.js";
 export interface MultiSocketProxyOptions extends ProxyOptions {
     socketClass?: any;
     server: boolean;
