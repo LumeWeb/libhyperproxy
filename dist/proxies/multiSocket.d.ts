@@ -25,7 +25,7 @@ export default class MultiSocketProxy extends Proxy {
     handleClosePeer(peer: Peer): Promise<void>;
     get(pubkey: Uint8Array): PeerEntity | undefined;
     update(pubkey: Uint8Array, data: Partial<PeerEntity>): void;
-    createSocket(options: TcpSocketConnectOpts): Promise<typeof this.socketClass>;
+    createSocket(options: TcpSocketConnectOpts): typeof this.socketClass;
     private _registerOpenSocketMessage;
     private _registerWriteSocketMessage;
     private _registerCloseSocketMessage;

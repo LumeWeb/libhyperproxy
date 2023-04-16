@@ -136,7 +136,7 @@ class MultiSocketProxy extends proxy_js_1.default {
             },
         });
     }
-    async createSocket(options) {
+    createSocket(options) {
         if (!this._peers.size) {
             throw new Error("no peers found");
         }
