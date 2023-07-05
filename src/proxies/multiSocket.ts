@@ -19,6 +19,7 @@ import {
 } from "./multiSocket/types.js";
 import DummySocket from "./multiSocket/dummySocket.js";
 import Peer from "./multiSocket/peer.js";
+import { uint8ArrayToHexString } from "binconv";
 
 export interface MultiSocketProxyOptions extends ProxyOptions {
   socketClass?: any;
@@ -102,7 +103,7 @@ export default class MultiSocketProxy extends Proxy {
   private _peers: Map<string, PeerEntity> = new Map<string, PeerEntity>();
   private _nextPeer;
   private _server = false;
-  private _allowedPorts = [];
+  private _allowedPorts: number[] = [];
 
   constructor(options: MultiSocketProxyOptions) {
     super(options);
@@ -209,12 +210,14 @@ export default class MultiSocketProxy extends Proxy {
             self._allowedPorts.length &&
             !self._allowedPorts.includes((m as TcpSocketConnectOpts).port)
           ) {
-            self.get(await self._getPublicKey(peer)).messages.errorSocket.send({
-              id: (m as SocketRequest).id,
-              err: new Error(
-                `port ${(m as TcpSocketConnectOpts).port} not allowed`
-              ),
-            });
+            self
+              .get(await self._getPublicKey(peer))
+              ?.messages.errorSocket?.send({
+                id: (m as SocketRequest).id,
+                err: new Error(
+                  `port ${(m as TcpSocketConnectOpts).port} not allowed`,
+                ),
+              });
             return;
           }
         }
@@ -227,7 +230,7 @@ export default class MultiSocketProxy extends Proxy {
             m.id,
             self,
             self.get(await self._getPublicKey(peer)) as PeerEntity,
-            m
+            m,
           ).connect();
           return;
         }
@@ -290,7 +293,6 @@ export default class MultiSocketProxy extends Proxy {
     const message = await peer.channel.addMessage({
       encoding: errorSocketEncoding,
       onmessage(m: ErrorSocketRequest) {
-        // @ts-ignore
         self._sockets.get(m.id)?.emit("error", m.err);
       },
     });
@@ -300,7 +302,7 @@ export default class MultiSocketProxy extends Proxy {
   }
 
   private _toString(pubkey: Uint8Array) {
-    return b4a.from(pubkey).toString("hex");
+    return uint8ArrayToHexString(pubkey);
   }
 
   private async _getPublicKey(peer: Peer) {

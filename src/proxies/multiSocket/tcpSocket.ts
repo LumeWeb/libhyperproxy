@@ -1,8 +1,8 @@
-import { Callback, Duplex } from "streamx";
+import { Callback } from "streamx";
+import * as net from "net";
 import { Socket, TcpSocketConnectOpts } from "net";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity, SocketRequest, WriteSocketRequest } from "./types.js";
-import * as net from "net";
 import BaseSocket from "../../socket.js";
 
 export default class TcpSocket extends BaseSocket {
@@ -18,7 +18,7 @@ export default class TcpSocket extends BaseSocket {
     remoteId: number,
     manager: MultiSocketProxy,
     peer: PeerEntity,
-    options: TcpSocketConnectOpts
+    options: TcpSocketConnectOpts,
   ) {
     super();
     this._remoteId = remoteId;
@@ -72,9 +72,9 @@ export default class TcpSocket extends BaseSocket {
     ["timeout", "error", "connect", "end", "destroy", "close"].forEach(
       (event) => {
         this._socket?.on(event, (...args: any) =>
-          this.emit(event as any, ...args)
+          this.emit(event as any, ...args),
         );
-      }
+      },
     );
 
     this._socket.pipe(this as any);

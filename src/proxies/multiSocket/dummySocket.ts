@@ -3,8 +3,8 @@ import { TcpSocketConnectOpts } from "net";
 import { clearTimeout } from "timers";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity, SocketRequest, WriteSocketRequest } from "./types.js";
-import { maybeGetAsyncProperty } from "../../util.js";
-import Socket, { SocketOptions } from "../../socket.js";
+import { maybeGetAsyncProperty } from "#util.js";
+import Socket, { SocketOptions } from "#socket.js";
 
 export default class DummySocket extends Socket {
   private _options: TcpSocketConnectOpts;
@@ -18,7 +18,7 @@ export default class DummySocket extends Socket {
     manager: MultiSocketProxy,
     peer: PeerEntity,
     connectOptions: TcpSocketConnectOpts,
-    socketOptions: SocketOptions
+    socketOptions: SocketOptions,
   ) {
     super(socketOptions);
     this._id = id;

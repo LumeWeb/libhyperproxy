@@ -1,5 +1,4 @@
-import { ProxyOptions } from "../../proxy.js";
-import Peer from "../../peer.js";
+import Peer from "#peer.js";
 
 export interface SocketRequest {
   remoteId: number;

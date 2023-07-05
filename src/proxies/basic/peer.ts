@@ -1,10 +1,11 @@
-import BasePeer from "../../peer.js";
-import { maybeGetAsyncProperty } from "../../util.js";
-import Socket from "../../socket.js";
+import BasePeer from "#peer.js";
+import { maybeGetAsyncProperty } from "#util.js";
+import Socket from "#socket.js";
 import { Buffer } from "buffer";
 
 export default class Peer extends BasePeer {
   private _pipe?: any;
+
   protected async initSocket() {
     const self = this;
 
@@ -32,7 +33,7 @@ export default class Peer extends BasePeer {
     }
 
     this._socket?.on("end", () => this._channel.close());
-    let ret = await this._onopen?.(this._socket, m);
+    let ret = await this._onopen?.(this._socket as Socket, m);
     if (!ret || (ret && ret.connect === false)) {
       // @ts-ignore
       self._socket?.emit("connect");
@@ -52,7 +53,7 @@ export default class Peer extends BasePeer {
         if (m instanceof Uint8Array) {
           m = Buffer.from(m);
         }
-        self._socket.emit("data", m);
+        self._socket?.emit("data", m);
         await self._onreceive?.(m);
       },
     });

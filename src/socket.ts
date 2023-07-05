@@ -1,5 +1,4 @@
-import { Duplex, DuplexEvents, Callback } from "streamx";
-import { write } from "fs";
+import { Callback, Duplex, DuplexEvents } from "streamx";
 
 const IPV4 = "IPv4";
 const IPV6 = "IPv6";
@@ -14,7 +13,7 @@ export interface SocketOptions {
   write?: (
     this: Duplex<any, any, any, any, true, true, DuplexEvents<any, any>>,
     data: any,
-    cb: Callback
+    cb: Callback,
   ) => void;
   emulateWebsocket?: boolean;
 }
@@ -23,9 +22,7 @@ export default class Socket extends Duplex {
   private _allowHalfOpen: boolean;
   public remoteAddress: any;
   public remotePort: any;
-  public remoteFamily: AddressFamily;
-
-  public bufferSize;
+  public remoteFamily?: AddressFamily;
 
   declare readable: true;
   declare writable: true;
@@ -49,7 +46,7 @@ export default class Socket extends Duplex {
     this._allowHalfOpen = allowHalfOpen;
     this.remoteAddress = remoteAddress;
     this.remotePort = remotePort;
-    this.remotePublicKey = remotePublicKey;
+    this.remotePublicKey = remotePublicKey as Uint8Array;
     this._emulateWebsocket = emulateWebsocket;
 
     if (remoteAddress) {
@@ -68,15 +65,15 @@ export default class Socket extends Duplex {
       this.close = this.end;
       this.addEventListener("data", (data: any) =>
         // @ts-ignore
-        this.emit("message", new MessageEvent("data", { data }))
+        this.emit("message", new MessageEvent("data", { data })),
       );
     }
   }
 
-  private _connecting: boolean;
+  private _connecting?: boolean;
 
   get connecting(): boolean {
-    return this._connecting;
+    return this._connecting as boolean;
   }
 
   get readyState(): string | number {
@@ -140,13 +137,13 @@ export default class Socket extends Duplex {
 
   static isIPv4(input: string) {
     return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-      input
+      input,
     );
   }
 
   static isIPv6(input: string) {
     return /^(([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))$/.test(
-      input
+      input,
     );
   }
 }

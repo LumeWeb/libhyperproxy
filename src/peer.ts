@@ -1,11 +1,10 @@
 import Proxy from "./proxy.js";
 import Socket from "./socket.js";
-import { Buffer } from "buffer";
-import { maybeGetAsyncProperty } from "./util.js";
+
 export type OnOpen = (
   peer: Peer,
   socket: Socket,
-  data: any
+  data: any,
 ) =>
   | { connect: boolean }
   | Promise<{ connect: boolean }>
@@ -19,7 +18,7 @@ export type OnChannel = (peer: Peer, channel: any) => void;
 
 export type OnOpenBound = (
   socket: Socket,
-  data: any
+  data: any,
 ) =>
   | { connect: boolean }
   | Promise<{ connect: boolean }>
@@ -75,18 +74,18 @@ export default abstract class Peer {
     this._proxy = proxy;
     this._peer = peer;
     this._muxer = muxer;
-    this._onopen = onopen?.bind(undefined, this);
-    this._onreceive = onreceive?.bind(undefined, this);
-    this._onsend = onsend?.bind(undefined, this);
-    this._onclose = onclose?.bind(undefined, this);
-    this._onchannel = onchannel?.bind(undefined, this);
+    this._onopen = onopen?.bind(undefined, this) as OnOpenBound;
+    this._onreceive = onreceive?.bind(undefined, this) as OnReceiveBound;
+    this._onsend = onsend?.bind(undefined, this) as OnSendBound;
+    this._onclose = onclose?.bind(undefined, this) as OnCloseBound;
+    this._onchannel = onchannel?.bind(undefined, this) as OnChannelBound;
     this._emulateWebsocket = emulateWebsocket;
   }
 
   protected _socket?: Socket;
 
   get socket(): Socket {
-    return this._socket;
+    return this._socket as Socket;
   }
 
   protected _channel?: any;
