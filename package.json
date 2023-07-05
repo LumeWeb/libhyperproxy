@@ -26,5 +26,11 @@
         "protomux": "^3.5.0",
         "serialize-error": "^11.0.0",
         "streamx": "^2.15.0"
+    },
+    "files": [
+        "lib"
+    ],
+    "publishConfig": {
+        "access": "public"
     }
 }
