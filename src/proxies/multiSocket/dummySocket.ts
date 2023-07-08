@@ -1,4 +1,4 @@
-import { Callback, Duplex } from "streamx";
+import { Callback } from "streamx";
 import { TcpSocketConnectOpts } from "net";
 import { clearTimeout } from "timers";
 import MultiSocketProxy from "../multiSocket.js";
