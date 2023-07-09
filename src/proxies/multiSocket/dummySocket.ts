@@ -1,6 +1,6 @@
 import { Callback } from "streamx";
 import { TcpSocketConnectOpts } from "net";
-import { clearTimeout } from "timers";
+import { clearTimeout, setTimeout } from "timers";
 import MultiSocketProxy from "../multiSocket.js";
 import { PeerEntity, SocketRequest, WriteSocketRequest } from "./types.js";
 import { maybeGetAsyncProperty } from "#util.js";
