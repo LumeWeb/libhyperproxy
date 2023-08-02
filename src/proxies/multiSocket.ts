@@ -190,7 +190,10 @@ export default class MultiSocketProxy extends Proxy {
 
     const peer = this._nextPeer();
     const socketId = nextSocketId();
-    const socket = new this.socketClass(socketId, this, peer, options);
+    const socket = new this.socketClass(socketId, this, peer, options, {
+      remoteAddress: options.host,
+      remotePort: options.port,
+    });
     this._sockets.set(socketId, socket);
 
     return socket;
