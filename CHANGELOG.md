@@ -1,3 +1,10 @@
+## [0.0.2-develop.3](https://git.lumeweb.com/LumeWeb/libhyperproxy/compare/v0.0.2-develop.2...v0.0.2-develop.3) (2023-08-02)
+
+
+### Bug Fixes
+
+* add stub unref method for UDP ([3ed168a](https://git.lumeweb.com/LumeWeb/libhyperproxy/commit/3ed168abd70f37145e46dbe1c98363f9dd8afb0d))
+
 ## [0.0.2-develop.2](https://git.lumeweb.com/LumeWeb/libhyperproxy/compare/v0.0.2-develop.1...v0.0.2-develop.2) (2023-07-09)
 
 
