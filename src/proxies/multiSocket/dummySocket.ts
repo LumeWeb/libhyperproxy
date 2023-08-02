@@ -81,4 +81,6 @@ export default class DummySocket extends Socket {
       cb && cb();
     }, ms) as any;
   }
+
+  public unref() {}
 }
