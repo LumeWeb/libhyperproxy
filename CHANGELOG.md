@@ -1,3 +1,10 @@
+## [0.0.2-develop.4](https://git.lumeweb.com/LumeWeb/libhyperproxy/compare/v0.0.2-develop.3...v0.0.2-develop.4) (2023-08-02)
+
+
+### Bug Fixes
+
+* pass remoteAddress and remotePort as part of socket options ([608aace](https://git.lumeweb.com/LumeWeb/libhyperproxy/commit/608aace286bc62b327954d369023412c40e8e83d))
+
 ## [0.0.2-develop.3](https://git.lumeweb.com/LumeWeb/libhyperproxy/compare/v0.0.2-develop.2...v0.0.2-develop.3) (2023-08-02)
 
 
